@@ -1,0 +1,49 @@
+{
+  "recommendations": [
+    // ── CSS ──────────────────────────────────────────────────────────────────
+    // Autocomplete inteligente de variables CSS: escribe var( y sugiere todas
+    // las custom properties definidas en src/index.css con preview de color
+    "phoenisx.cssvar",
+    // IntelliSense de clases CSS para archivos HTML y JSX
+    "ecmel.vscode-html-css",
+
+    // ── Linting ──────────────────────────────────────────────────────────────
+    // Stylelint: muestra errores de CSS en tiempo real en el editor
+    // (usa la config de .stylelintrc.js — resalta valores hardcodeados, BEM, orden...)
+    "stylelint.vscode-stylelint",
+    // ESLint: muestra errores de TypeScript/TSX en tiempo real
+    // (usa la config de eslint.config.js)
+    "dbaeumer.vscode-eslint",
+
+    // ── Formateo ─────────────────────────────────────────────────────────────
+    // Prettier: formatea al guardar TS, TSX, CSS, JSON, HTML automáticamente
+    // (usa la config de .prettierrc)
+    "esbenp.prettier-vscode",
+
+    // ── TypeScript & React ───────────────────────────────────────────────────
+    // Mejora los errores de TypeScript en el editor con mensajes más claros
+    "yoavbls.pretty-ts-errors",
+    // Autocompletado de imports de React, rutas relativas y módulos de Node
+    "christian-kohler.path-intellisense",
+    // Resalta y navega por los imports/exports del proyecto
+    "wix.vscode-import-cost",
+
+    // ── Git ───────────────────────────────────────────────────────────────────
+    // GitLens: ver el autor de cada línea, historial y comparativas de ramas
+    "eamodio.gitlens",
+
+    // ── DX / Productividad ───────────────────────────────────────────────────
+    // Resalta los pares de corchetes/paréntesis con colores distintos
+    "CoenraadS.bracket-pair-colorizer-2",
+    // Resalta TODO, FIXME, HACK, NOTE en comentarios del código
+    "gruntfuggly.todo-tree",
+    // Muestra el tamaño del archivo abierto en la barra de estado
+    "mkxml.vscode-filesize",
+    // Auto-cierra etiquetas HTML/JSX al escribir
+    "formulahendry.auto-close-tag",
+    // Auto-renombra la etiqueta de cierre cuando modificas la de apertura en JSX
+    "formulahendry.auto-rename-tag",
+    // Previsualiza colores hex, rgb, hsl directamente en el editor
+    "naumovs.color-highlight"
+  ]
+}

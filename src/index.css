@@ -1,0 +1,176 @@
+:root {
+  /* =========================================
+     1. Brand Colors (Colores Corporativos del Club)
+  ========================================= */
+  --primary-color: #1a1a1a;
+
+  /* Color principal oscuro (Header, menús laterales, fondos primarios) */
+  --primary-hover: #333;
+
+  /* Hover para botones o elementos que usan el primary-color */
+  --secondary-color: #e50000;
+
+  /* Acento Rojo del Burgos CF (Botones de acción, enlaces, decoraciones) */
+  --secondary-hover: #c00;
+
+  /* Hover oscurecido para acciones con el color secundario */
+
+  /* =========================================
+     2. Semantic Colors (Estados del Sistema)
+  ========================================= */
+  --success-color: #2e7d32;
+
+  /* Mensajes de éxito, píldoras "Aceptado", iconos de validación correcta */
+  --success-light: #e8f5e9;
+
+  /* Fondos de notificaciones de éxito (alertas suavecitas) */
+
+  --warning-color: #ed6c02;
+
+  /* Advertencias, píldoras "Pendiente", estados de precaución */
+  --warning-light: #fff3e0;
+
+  /* Fondos de notificaciones de advertencia */
+
+  --error-color: #dc3545;
+
+  /* Bordes de inputs inválidos, alertas de error, botones destructivos (borrar) */
+  --error-light: #ffebee;
+
+  /* Fondos de mensajes de error o tooltips destructivos */
+
+  --info-color: #0288d1;
+
+  /* Enlaces informativos, píldoras "En proceso", notas neutrales */
+  --info-light: #e1f5fe;
+
+  /* Fondos de alertas informativas */
+
+  /* =========================================
+     3. Neutral / Scale Grayscale (Escala de Grises)
+  ========================================= */
+
+  /* Los grises se usan para crear jerarquía visual sin competir con los Brand Colors */
+  --gray-50: #fafafa;
+
+  /* Fondos casi imperceptibles (muy claros) */
+  --gray-100: #f5f5f5;
+
+  /* Fondos secundarios, como para separar content de la página */
+  --gray-200: #eee;
+
+  /* Divisores muy suaves o fondos de tablas (filas par) */
+  --gray-300: #e0e0e0;
+
+  /* Úsalo generalmente para bordes de tarjetas, inputs o divisores HR */
+  --gray-400: #bdbdbd;
+
+  /* Bordes más pronunciados (ej. focus states tenues) */
+  --gray-500: #9e9e9e;
+
+  /* Texto secundario claro (Placeholder de inputs, Helper Texts) */
+  --gray-600: #757575;
+
+  /* Texto secundario legible (Fechas, subtítulos de noticias) */
+  --gray-700: #616161;
+
+  /* Texto con jerarquía media */
+  --gray-800: #424242;
+
+  /* Texto principal por defecto (mejor que negro puro para reducción de fatiga ocular) */
+  --gray-900: #212121;
+
+  /* Texto para títulos pesados (H1, H2) o elementos muy recargados */
+
+  /* =========================================
+     4. Layout & Typography (Configuración Base)
+  ========================================= */
+  --bg-color: #fff;
+
+  /* Fondo base principal de toda la web (Blanco) */
+  --text-color: var(--gray-800);
+
+  /* Referencia alias para aplicar automáticamente a <body> */
+  --text-muted: var(--gray-500);
+
+  /* Referencia alias para subtítulos rápidos */
+
+  /* Reservado para un futuro Dark Mode */
+  --dark-bg: #0d0d0d;
+  --dark-text: #fff;
+
+  /* =========================================
+     5. Borders & Shadows (Formas y Relieves)
+  ========================================= */
+  --border-color: var(--gray-300);
+
+  /* Borde por predeterminado del sistema */
+
+  /* Curvas para mantener el diseño UI uniforme */
+  --border-radius-sm: 4px;
+
+  /* Cajas pequeñas (checkboxes, tags, píldoras) */
+  --border-radius-md: 6px;
+
+  /* Componentes regulares (Botones, Inputs) */
+  --border-radius-lg: 12px;
+
+  /* Contenedores grandes (Tarjetas, Modales, Paneles Admin) */
+
+  /* Elevación (Profundidad usando Sombras) */
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px rgb(0 0 0 / 0.06);
+
+  /* Para botones estáticos o dropdowns */
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
+
+  /* Para tarjetas de noticias/jugadores */
+  --shadow-lg: 0 10px 15px rgb(0 0 0 / 0.1);
+
+  /* Para modales flotantes (z-index alto) */
+
+  /* =========================================
+     6. Glassmorphism / Overlays (Efectos Modernos)
+  ========================================= */
+
+  /* Sombras y desenfoques (útiles sobre Hero Images o modales) */
+  --glass-bg: rgb(255 255 255 / 0.1);
+  --glass-border: rgb(255 255 255 / 0.2);
+
+  /* Legacy App Combos (Mantiene componentes viejos vivos sin romper el layout) */
+  --light-gray: var(--gray-100);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Outfit, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}

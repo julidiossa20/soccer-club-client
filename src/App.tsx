@@ -1,7 +1,7 @@
 import './App.css';
 
 function App() {
-  return <div>estado inicial</div>;
+  return <div className="app-uno">estado inicial</div>;
 }
 
 export default App;
