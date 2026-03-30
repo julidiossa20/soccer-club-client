@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useDevice } from '../../../hooks';
 import styles from './header.module.css';
 import { useState } from 'react';
+import { Medal, Menu, Tornado } from 'lucide-react';
 
 const nav = ({ isAdmin, isAuthenticated }: { isAdmin: boolean; isAuthenticated: boolean }) => {
   return [
@@ -27,13 +28,15 @@ export default function Header() {
     <div className={styles.header}>
       <div className={styles.header__logo}>
         <Link to='/' onClick={closeMenu}>
-          <h2>CLUB</h2>
+          <h2>
+            <Medal size={25} />
+          </h2>
         </Link>
       </div>
       <div className={styles.header__nav}>
         {isMobile && (
           <button className={`${styles['header__nav-menu--button']}`} onClick={() => setMenuOpen(!menuOpen)}>
-            ☰
+            {menuOpen ? <Tornado /> : <Menu />}
           </button>
         )}
         <ul className={navClasses}>
