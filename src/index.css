@@ -88,7 +88,8 @@
   --bg-color: #fff;
 
   /* Fondo base principal de toda la web (Blanco) */
-  --text-color: var(--gray-800);
+  --text-color-black: var(--gray-800);
+  --text-color-white: var(--gray-50);
 
   /* Referencia alias para aplicar automáticamente a <body> */
   --text-muted: var(--gray-500);
@@ -118,13 +119,16 @@
   /* Contenedores grandes (Tarjetas, Modales, Paneles Admin) */
 
   /* Elevación (Profundidad usando Sombras) */
-  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-sm: 0 1px 3px rgb(0, 0, 0, 0.1), 0 1px 2px rgb(0, 0, 0, 0.06);
 
   /* Para botones estáticos o dropdowns */
-  --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px rgb(0, 0, 0, 0.1);
 
   /* Para tarjetas de noticias/jugadores */
-  --shadow-lg: 0 10px 15px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px rgb(0, 0, 0, 0.1);
+
+  /* Elevación máxima / Enfoque: Para Modales o Tooltips sobre fondos complejos */
+  --shadow-xl: 0 2px 10px rgb(0, 0, 0, 0.5);
 
   /* Para modales flotantes (z-index alto) */
 

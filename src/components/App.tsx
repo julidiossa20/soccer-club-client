@@ -12,7 +12,7 @@ function App() {
       </header>
       <main className={styles.app__main}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path='/' element={<Home />} />
         </Routes>
       </main>
       <footer className={styles.app__footer}>

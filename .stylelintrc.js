@@ -20,8 +20,6 @@ export default {
 
     // Obliga a usar valores numéricos para la transparencia: 0.5 en lugar de 50%
     'alpha-value-notation': 'number',
-    // Obliga a usar la sintaxis moderna de funciones de color: rgb(255 0 0) en lugar de rgb(255, 0, 0)
-    'color-function-notation': 'modern',
     // Prohíbe usar nombres de colores como "red" o "blue"; se deben usar valores explícitos
     'color-named': 'never',
     // Prohíbe hexadecimales inválidos como #GGG o #12345
@@ -57,7 +55,7 @@ export default {
     'unit-no-unknown': true,
     // Lista blanca de unidades permitidas en el proyecto
     'unit-allowed-list': [
-      'px',
+      // 'px',
       'em',
       'rem',
       '%', // Unidades base más comunes
@@ -266,7 +264,9 @@ export default {
         'selector-class-pattern': null, // Resets globales no son BEM
         'declaration-property-value-allowed-list': null, // Aquí van los valores reales
         'color-named': null, // Podría inicializarse desde nombre (edge case)
-        'custom-property-pattern': null, // Pueden existir variables legacy: --light-gray
+        'custom-property-pattern': null, // Pueden existir variables legacy: --light-gray,
+        'unit-allowed-list': null,
+        'color-function-notation': null,
       },
     },
   ],

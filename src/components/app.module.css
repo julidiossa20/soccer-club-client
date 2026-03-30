@@ -3,7 +3,13 @@
 }
 
 .app__header {
-  /* Pendiente */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1.3rem 0;
+  color: var(--text-color-white);
+  background-color: var(--primary-color);
+  box-shadow: var(--shadow-xl);
 }
 
 .app__main {
