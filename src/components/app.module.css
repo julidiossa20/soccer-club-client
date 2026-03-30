@@ -1,5 +1,7 @@
 .app {
-  /* Pendiente */
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  min-height: 100vh;
 }
 
 .app__header {
@@ -17,5 +19,9 @@
 }
 
 .app__footer {
-  /* Pendiente */
+  padding: 2.5rem 0;
+  margin-top: auto;
+  color: var(--text-color-white);
+  text-align: center;
+  background: var(--primary-color);
 }
