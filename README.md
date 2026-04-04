@@ -487,3 +487,455 @@ Antes de cada `git commit`, **lint-staged** ejecuta automáticamente:
 > Si alguna regla falla y no es auto-correctable, el commit será **bloqueado** hasta que se corrija manualmente.
 
 Configurado en `.lintstagedrc` y `.husky/`.
+
+---
+
+## 🧩 Sistema de Formularios
+
+El proyecto incluye un sistema de formularios reutilizable compuesto por dos piezas que trabajan juntas: el componente `<Form />` y el hook `useForm()`.
+
+---
+
+### Estructura de archivos
+
+```
+src/
+├── components/core/Form/
+│   ├── types.ts        ← Todos los tipos y interfaces
+│   ├── FormField.tsx   ← Renderiza un campo según su tipo
+│   ├── Form.tsx        ← Componente principal
+│   └── index.ts        ← Barrel de exports
+└── hooks/
+    └── useForm.ts      ← Hook de control de estado
+```
+
+---
+
+### `<Form />` — Componente de renderizado
+
+Recibe un `schema` y renderiza los campos correspondientes usando los componentes de `core`. No maneja estado propio, todo viene del padre.
+
+#### Props
+
+| Prop          | Tipo                                 | Default      | Descripción                           |
+| ------------- | ------------------------------------ | ------------ | ------------------------------------- |
+| `schema`      | `SchemaField[]`                      | —            | Definición de los campos a renderizar |
+| `values`      | `Record<string, FieldValue>`         | —            | Valores actuales del formulario       |
+| `errors`      | `Record<string, string \| string[]>` | `{}`         | Errores por campo                     |
+| `onChange`    | `(key, value) => void`               | —            | Callback al cambiar cualquier campo   |
+| `onSubmit`    | `(e) => void`                        | —            | Callback al hacer submit              |
+| `columns`     | `1 \| 2`                             | `1`          | Columnas del grid de campos           |
+| `isLoading`   | `boolean`                            | `false`      | Muestra spinner en el botón submit    |
+| `submitLabel` | `string`                             | `'Guardar'`  | Texto del botón submit                |
+| `onCancel`    | `() => void`                         | —            | Si se pasa, aparece el botón cancelar |
+| `cancelLabel` | `string`                             | `'Cancelar'` | Texto del botón cancelar              |
+| `className`   | `string`                             | `''`         | Clase extra para el `<form>`          |
+
+#### Definición del schema — `SchemaField`
+
+Cada campo del schema es un objeto con discriminated union por `type`, lo que da autocompletado preciso según el tipo elegido.
+
+```ts
+// Propiedades comunes a todos los campos
+interface BaseField {
+  key: string; // identificador único del campo
+  label: string; // etiqueta visible
+  required?: boolean; // marca el campo como obligatorio
+  placeholder?: string;
+  helperText?: string;
+  disabled?: boolean;
+  colSpan?: 1 | 2; // cuántas columnas ocupa en el grid
+}
+```
+
+| `type`       | Componente renderizado    | Props extra                                        |
+| ------------ | ------------------------- | -------------------------------------------------- |
+| `'text'`     | `<Input type="text">`     | `leftIcon?`, `rightIcon?`                          |
+| `'email'`    | `<Input type="email">`    | `leftIcon?`, `rightIcon?`                          |
+| `'password'` | `<Input type="password">` | `leftIcon?`, `rightIcon?`                          |
+| `'number'`   | `<Input type="number">`   | `leftIcon?`, `rightIcon?`, `min?`, `max?`, `step?` |
+| `'date'`     | `<Input type="date">`     | `leftIcon?`, `rightIcon?`, `min?`, `max?`          |
+| `'textarea'` | `<Textarea>`              | `rows?`                                            |
+| `'checkbox'` | `<Checkbox>`              | —                                                  |
+| `'select'`   | `<Select>`                | `options: Option[]` (requerido)                    |
+
+> Cada `type` es una interfaz independiente (discriminated union). TypeScript sabe exactamente qué props acepta cada uno: `select` requiere `options`, `number` expone `min/max/step`, los campos de input aceptan `leftIcon`/`rightIcon`. Si usas `satisfies SchemaField[]` obtienes autocompletado preciso sin mezclar props entre tipos.
+
+#### Grid de columnas y `colSpan`
+
+Con `columns={2}` el formulario usa un grid de 2 columnas. Cualquier campo con `colSpan: 2` ocupa el ancho completo. En pantallas menores a 600px el grid colapsa a 1 columna automáticamente.
+
+```
+columns={2}, sin colSpan:        columns={2}, con colSpan:
+┌──────────┬──────────┐          ┌──────────┬──────────┐
+│  nombre  │  email   │          │  nombre  │  email   │
+├──────────┼──────────┤          ├──────────────────────┤
+│  edad    │  rol     │          │       contenido      │  ← colSpan: 2
+└──────────┴──────────┘          └──────────────────────┘
+```
+
+---
+
+### `useForm()` — Hook de control de estado
+
+Maneja `values`, `errors`, validación de `required` y utilidades para el padre. Está completamente tipado con genéricos inferidos desde el schema.
+
+#### Firma
+
+```ts
+function useForm<T extends SchemaField[]>(schema: T, initialValues?: Partial<InferFormValues<T>>): UseFormReturn<T>;
+```
+
+#### Inferencia de tipos por campo
+
+El hook infiere el tipo de cada valor según el `type` del campo en el schema:
+
+| `type` del campo | Tipo de `values[key]` |
+| ---------------- | --------------------- |
+| `'checkbox'`     | `boolean`             |
+| `'number'`       | `number`              |
+| cualquier otro   | `string`              |
+
+Esto significa que `values.activo` es `boolean` y `values.edad` es `number` directamente, sin casteos.
+
+#### Lo que devuelve
+
+| Propiedad         | Tipo                       | Descripción                               |
+| ----------------- | -------------------------- | ----------------------------------------- |
+| `values`          | `InferFormValues<T>`       | Valores tipados campo a campo             |
+| `errors`          | `FormErrors<T>`            | Errores por campo (solo keys del schema)  |
+| `isDirty`         | `boolean`                  | `true` si el usuario tocó algún campo     |
+| `handleChange`    | `(key, value) => void`     | Pasa directo a `Form onChange`            |
+| `handleSubmit`    | `(onValid) => (e) => void` | Valida required y llama tu callback       |
+| `setErrors`       | `(errors) => void`         | Setea errores externos (ej: servidor)     |
+| `setFieldError`   | `(key, error) => void`     | Error puntual en un campo                 |
+| `clearFieldError` | `(key) => void`            | Limpia el error de un campo               |
+| `reset`           | `() => void`               | Vuelve a `initialValues` y limpia errores |
+| `setValues`       | `(partial) => void`        | Inyecta valores (modo edición)            |
+
+#### `handleSubmit` — cómo funciona
+
+Recibe tu callback `onValid` y devuelve el handler del `<form>`. Antes de llamar `onValid` valida todos los campos con `required: true`. Si hay errores los setea en `errors` y no llama `onValid`.
+
+```ts
+const onSubmit = handleSubmit(async (data) => {
+  // data está tipado como InferFormValues<typeof schema>
+  // solo llega aquí si todos los required están completos
+  await api.save(data);
+});
+
+<Form onSubmit={onSubmit} ... />
+```
+
+---
+
+### Casos de uso
+
+---
+
+#### Caso 1 — Login (formulario simple, 1 columna, iconos)
+
+El caso más básico. Schema pequeño, sin `initialValues`, errores del servidor mapeados campo a campo.
+
+```tsx
+import { AtSign, KeyRound } from 'lucide-react';
+import { Form } from '@/components/core/Form';
+import { useForm } from '@/hooks';
+import type { SchemaField } from '@/components/core/Form';
+
+const loginSchema = [
+  {
+    key: 'email',
+    label: 'Email',
+    type: 'email',
+    required: true,
+    placeholder: 'Correo electrónico',
+    leftIcon: <AtSign size={16} />,
+  },
+  {
+    key: 'password',
+    label: 'Contraseña',
+    type: 'password',
+    required: true,
+    placeholder: 'Contraseña',
+    leftIcon: <KeyRound size={16} />,
+  },
+] as const satisfies SchemaField[];
+
+const LoginPage = () => {
+  const { call, loading, findError } = useServices<Login.Data, Login.TBody>();
+  const { values, errors, handleChange, handleSubmit, setFieldError } = useForm(loginSchema);
+
+  const onSubmit = handleSubmit(async (data) => {
+    // data.email → string ✅   data.password → string ✅
+    const response = await call('post', '/api/v1/user/login', {
+      email: data.email,
+      password: data.password,
+    });
+
+    if (!response.success) {
+      // mapea errores del servidor a los campos del schema
+      setFieldError('email', findError('email'));
+      setFieldError('password', findError('password'));
+    }
+  });
+
+  return (
+    <Form
+      schema={loginSchema}
+      values={values}
+      errors={errors}
+      isLoading={loading}
+      submitLabel='Iniciar Sesión'
+      onChange={handleChange}
+      onSubmit={onSubmit}
+    />
+  );
+};
+```
+
+---
+
+#### Caso 2 — Crear registro (grid 2 columnas, todos los tipos de campo)
+
+Muestra el uso de `columns={2}`, `colSpan`, iconos, `min/max` en number y date, select con opciones y checkbox.
+
+```tsx
+import { User, Mail, Hash, Calendar } from 'lucide-react';
+import { Form } from '@/components/core/Form';
+import { useForm } from '@/hooks';
+import type { SchemaField } from '@/components/core/Form';
+
+const posicionOptions = [
+  { label: 'Portero', value: 'GK' },
+  { label: 'Defensa', value: 'DEF' },
+  { label: 'Centrocampista', value: 'MID' },
+  { label: 'Delantero', value: 'FWD' },
+];
+
+const playerSchema = [
+  {
+    key: 'nombre',
+    label: 'Nombre completo',
+    type: 'text',
+    required: true,
+    leftIcon: <User size={16} />,
+  },
+  {
+    key: 'email',
+    label: 'Email',
+    type: 'email',
+    required: true,
+    leftIcon: <Mail size={16} />,
+  },
+  {
+    key: 'dorsal',
+    label: 'Dorsal',
+    type: 'number',
+    min: 1,
+    max: 99,
+    leftIcon: <Hash size={16} />,
+  },
+  {
+    key: 'posicion',
+    label: 'Posición',
+    type: 'select',
+    required: true,
+    options: posicionOptions,
+  },
+  {
+    key: 'fecha_nacimiento',
+    label: 'Fecha de nacimiento',
+    type: 'date',
+    required: true,
+    max: '2010-01-01', // no permite fechas futuras ni muy recientes
+    leftIcon: <Calendar size={16} />,
+  },
+  {
+    key: 'contrato',
+    label: 'Fecha fin de contrato',
+    type: 'date',
+    min: new Date().toISOString().split('T')[0], // no permite fechas pasadas
+  },
+  {
+    key: 'bio',
+    label: 'Biografía',
+    type: 'textarea',
+    rows: 4,
+    colSpan: 2, // ocupa las 2 columnas
+    placeholder: 'Describe al jugador...',
+  },
+  {
+    key: 'activo',
+    label: 'Jugador activo',
+    type: 'checkbox',
+  },
+] as const satisfies SchemaField[];
+
+const CreatePlayerForm = () => {
+  const { call, loading } = useServices<Player, Partial<Player>>();
+  const { values, errors, handleChange, handleSubmit, reset, setErrors } = useForm(
+    playerSchema,
+    { activo: true }, // initialValues: checkbox marcado por defecto
+  );
+
+  const onSubmit = handleSubmit(async (data) => {
+    // data.nombre → string, data.dorsal → number, data.activo → boolean ✅
+    const response = await call('post', '/api/v1/players', data);
+
+    if (response.success) {
+      reset(); // limpia el formulario tras crear
+    } else {
+      setErrors({
+        // errores del servidor, solo keys del schema ✅
+        nombre: 'Este nombre ya existe en el equipo',
+        email: 'El email ya está registrado',
+      });
+    }
+  });
+
+  return (
+    <Form
+      schema={playerSchema}
+      values={values}
+      errors={errors}
+      columns={2}
+      isLoading={loading}
+      submitLabel='Crear jugador'
+      onCancel={reset}
+      cancelLabel='Limpiar'
+      onChange={handleChange}
+      onSubmit={onSubmit}
+    />
+  );
+};
+```
+
+---
+
+#### Caso 3 — Editar registro (cargar datos existentes con `setValues`)
+
+El patrón de edición: se carga el registro del servidor y se inyecta en el formulario con `setValues`. El botón submit solo se activa si hay cambios (`isDirty`).
+
+```tsx
+const EditPlayerForm = ({ playerId }: { playerId: number }) => {
+  const { call, loading } = useServices<Player, Partial<Player>>();
+  const { values, errors, isDirty, handleChange, handleSubmit, setValues, setErrors } = useForm(playerSchema);
+
+  // cargar datos al montar
+  useEffect(() => {
+    void call('get', `/api/v1/players/${playerId}`).then((res) => {
+      if (res.success) {
+        setValues(res.data); // inyecta los datos, solo acepta keys del schema ✅
+      }
+    });
+  }, [playerId]);
+
+  const onSubmit = handleSubmit(async (data) => {
+    const response = await call('put', `/api/v1/players/${playerId}`, data);
+
+    if (!response.success) {
+      setErrors({ nombre: 'Ya existe un jugador con ese nombre' });
+    }
+  });
+
+  return (
+    <Form
+      schema={playerSchema}
+      values={values}
+      errors={errors}
+      columns={2}
+      isLoading={loading || !isDirty} // desactiva submit si no hay cambios
+      submitLabel='Guardar cambios'
+      onChange={handleChange}
+      onSubmit={onSubmit}
+    />
+  );
+};
+```
+
+---
+
+#### Caso 4 — Schema dinámico según rol o condición
+
+El schema se construye en tiempo de ejecución según el contexto. TypeScript sigue infiriendo los tipos correctamente.
+
+```tsx
+const usePlayerSchema = (isAdmin: boolean, equipos: Option[]) =>
+  [
+    { key: 'nombre', label: 'Nombre', type: 'text', required: true },
+    { key: 'email', label: 'Email', type: 'email', required: true },
+    // el campo equipo solo aparece si el usuario es admin
+    ...(isAdmin ? [{ key: 'equipo', label: 'Equipo', type: 'select' as const, options: equipos, required: true }] : []),
+    { key: 'activo', label: 'Activo', type: 'checkbox' },
+  ] satisfies SchemaField[];
+
+const PlayerForm = ({ isAdmin }: { isAdmin: boolean }) => {
+  const { data: equipos } = useEquipos();
+  const schema = usePlayerSchema(isAdmin, equipos);
+  const { values, errors, handleChange, handleSubmit } = useForm(schema);
+
+  const onSubmit = handleSubmit(async (data) => {
+    // si isAdmin → data.equipo existe ✅
+    // si no → data.equipo no existe ✅
+    await call('post', '/api/v1/players', data);
+  });
+
+  return <Form schema={schema} values={values} errors={errors} onChange={handleChange} onSubmit={onSubmit} />;
+};
+```
+
+---
+
+#### Caso 5 — Errores múltiples por campo y limpieza manual
+
+`Input` acepta `string[]` para mostrar varios mensajes bajo el campo. `setFieldError` y `clearFieldError` permiten control granular.
+
+```tsx
+const onSubmit = handleSubmit(async (data) => {
+  const response = await call('post', '/api/v1/players', data);
+
+  if (!response.success) {
+    // múltiples mensajes en un campo
+    setFieldError('password', ['Mínimo 8 caracteres', 'Debe contener al menos un número']);
+
+    // mensaje simple en otro
+    setFieldError('email', 'Este email ya está registrado');
+  }
+});
+
+// limpiar un error puntual sin resetear todo el formulario
+// (handleChange ya lo hace automáticamente al escribir, pero puedes forzarlo)
+const handleFocus = (key: string) => {
+  clearFieldError(key as 'email' | 'password');
+};
+```
+
+---
+
+#### Caso 6 — Formulario de solo lectura
+
+Deshabilita todos los campos derivando el schema. Útil para vistas de detalle que comparten el mismo schema que el formulario de edición.
+
+```tsx
+const PlayerDetail = ({ player }: { player: Player }) => {
+  const readonlySchema = playerSchema.map((f) => ({ ...f, disabled: true }));
+  // useForm no es necesario en modo lectura, los valores vienen de props
+  const { values, handleChange } = useForm(readonlySchema, player);
+
+  return (
+    <Form
+      schema={readonlySchema}
+      values={values}
+      errors={{}}
+      columns={2}
+      submitLabel='Editar' // el submit puede redirigir al modo edición
+      onChange={handleChange}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onEditClick();
+      }}
+    />
+  );
+};
+```

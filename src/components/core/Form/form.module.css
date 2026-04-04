@@ -1,0 +1,38 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem 1rem;
+}
+
+.fields.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.col-span-2 {
+  grid-column: 1 / -1;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+/* stylelint-disable-next-line unit-allowed-list */
+@media (width <= 600px) {
+  .fields.cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .col-span-2 {
+    grid-column: unset;
+  }
+}

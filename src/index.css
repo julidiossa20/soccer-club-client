@@ -117,8 +117,28 @@
   --border-radius-lg: 12px;
   --border-radius-50: 50%;
   --border-solid: 1px solid var(--gray-400);
-  --px12: 12px;
   --px05: 0.5px;
+  --px1: 1px;
+  --px2: 2px;
+  --px3: 3px;
+  --px4: 4px;
+  --px5: 5px;
+  --px6: 6px;
+  --px8: 8px;
+  --px10: 10px;
+  --px12: 12px;
+  --px14: 14px;
+  --px15: 15px;
+  --px16: 16px;
+  --px18: 18px;
+  --px20: 20px;
+  --px24: 24px;
+  --px26: 26px;
+  --px28: 28px;
+  --px35: 35px;
+  --px40: 40px;
+  --px80: 80px;
+  --px600: 600px;
 
   /* Contenedores grandes (Tarjetas, Modales, Paneles Admin) */
 

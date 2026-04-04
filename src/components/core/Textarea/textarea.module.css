@@ -1,0 +1,58 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-color-black);
+}
+
+.required {
+  margin-left: 0.25rem;
+  color: var(--secondary-color);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 5rem;
+  padding: 0.75rem 0.9375rem;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  outline: none;
+  background-color: var(--bg-color);
+  border: var(--border-solid);
+  border-radius: var(--border-radius-md);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.textarea:focus {
+  border-color: var(--secondary-color);
+  box-shadow: var(--shadown-red);
+}
+
+.textarea.is-error {
+  border-color: var(--error-color);
+}
+
+.textarea.is-error:focus {
+  box-shadow: var(--shadow-sm);
+}
+
+.error {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--error-color);
+}
+
+.helper {
+  font-size: 0.8rem;
+  color: var(--gray-600);
+}

@@ -1,0 +1,40 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: var(--px18);
+  height: var(--px18);
+  accent-color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.checkbox.is-error {
+  outline: var(--px2) solid var(--error-color);
+  outline-offset: var(--px1);
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color-black);
+  cursor: pointer;
+  user-select: none;
+}
+
+.error {
+  margin-left: 1.625rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--error-color);
+}

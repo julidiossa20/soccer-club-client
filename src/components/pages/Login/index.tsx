@@ -1,85 +1,73 @@
-import { AtSign } from 'lucide-react';
-import { useState } from 'react';
+import { AtSign, KeyRound } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import useServices from '../../../hooks/useServices';
-import { Button } from '../../core/Button/Button';
-import { Input } from '../../core/Input/Input';
-import { loginSuccess } from '../../../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
+import useServices from '../../../hooks/useServices';
+import { loginSuccess } from '../../../store/slices/authSlice';
+import { Form } from '../../core/Form';
+import { useForm } from '../../../hooks';
+import type { SchemaField } from '../../core/Form';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const loginSchema = [
+  {
+    key: 'email',
+    label: 'Email',
+    type: 'email',
+    required: true,
+    placeholder: 'Correo electrónico',
+    leftIcon: <AtSign size={16} />,
+  },
+  {
+    key: 'password',
+    label: 'Contraseña',
+    type: 'password',
+    required: true,
+    placeholder: 'Contraseña',
+    leftIcon: <KeyRound size={16} />,
+  },
+] as const satisfies SchemaField[];
+
+const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { call, loading, findError } = useServices<Login.Data, Login.TBody>();
 
-  const { call, loading, findError, removeError } = useServices<Login.Data, Record<string, string>>();
+  const { values, errors, handleChange, handleSubmit, setFieldError } = useForm(loginSchema);
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    const response = await call('post', '/api/v1/user/login', { email, password });
+  const onSubmit = handleSubmit(async (data) => {
+    const response = await call('post', '/api/v1/user/login', {
+      email: data.email,
+      password: data.password,
+    });
 
     if (response.success) {
       const { token, ...user } = response.data;
       localStorage.setItem('token', token);
       dispatch(loginSuccess({ user }));
-      setTimeout(() => {
-        void navigate('/');
-      }, 500);
+      setTimeout(() => void navigate('/'), 500);
+    } else {
+      setFieldError('email', findError('email'));
+      setFieldError('password', findError('password'));
     }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
-    if (e.target.name === 'email') {
-      setEmail(e.target.value);
-      removeError('email');
-    }
-    if (e.target.name === 'password') {
-      setPassword(e.target.value);
-      removeError('password');
-    }
-  };
+  });
 
   return (
     <div className='container' style={{ padding: '80px 20px', display: 'flex', justifyContent: 'center' }}>
       <div className='card' style={{ width: '100%', maxWidth: '400px', padding: '40px' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '30px', color: 'var(--primary-color)' }}>CLUB LOGIN</h2>
 
-        <form onSubmit={(e) => void handleLogin(e)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <Input
-              label='Email'
-              name='email'
-              type='email'
-              required
-              placeholder='Correo Electrónico'
-              value={email}
-              error={findError('email')}
-              onChange={handleChange}
-              leftIcon={<AtSign size={16} />}
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Input
-              type='password'
-              label='Contraseña'
-              name='password'
-              value={password}
-              onChange={handleChange}
-              placeholder='Contraseña'
-              error={findError('password')}
-              required
-              disabled={loading}
-            />
-          </div>
-          <Button variant='primary' isLoading={loading} disabled={loading}>
-            Iniciar sesión
-          </Button>
-        </form>
+        <Form
+          schema={loginSchema}
+          values={values}
+          errors={errors}
+          isLoading={loading}
+          submitLabel='Iniciar Sesión'
+          onCancel={() => void navigate(-1)}
+          onChange={handleChange}
+          onSubmit={onSubmit}
+        />
       </div>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;
