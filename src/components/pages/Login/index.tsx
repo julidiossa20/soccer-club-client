@@ -26,11 +26,10 @@ const loginSchema = [
   },
 ] as const satisfies SchemaField[];
 
-const LoginPage = () => {
+const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { call, loading, findError } = useServices<Login.Data, Login.TBody>();
-
   const { values, errors, handleChange, handleSubmit, setFieldError } = useForm(loginSchema);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -70,4 +69,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

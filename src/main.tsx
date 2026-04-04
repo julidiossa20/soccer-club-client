@@ -1,9 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import App from './components/App.tsx';
+import { RouterProvider } from 'react-router-dom';
 import './index.css';
+import router from './routes/index.tsx';
 import { store } from './store/index.ts';
 
 const rootElement = document.getElementById('root');
@@ -12,9 +12,10 @@ if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
       <Provider store={store}>
-        <BrowserRouter>
+        <RouterProvider router={router} />
+        {/* <BrowserRouter>
           <App />
-        </BrowserRouter>
+        </BrowserRouter> */}
       </Provider>
     </StrictMode>,
   );
