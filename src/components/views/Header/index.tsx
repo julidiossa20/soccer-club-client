@@ -1,8 +1,8 @@
+import { Medal, Menu, Tornado } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDevice } from '../../../hooks';
 import styles from './header.module.css';
-import { useState } from 'react';
-import { Medal, Menu, Tornado } from 'lucide-react';
 
 const nav = ({ isAdmin, isAuthenticated }: { isAdmin: boolean; isAuthenticated: boolean }) => {
   return [

@@ -8,10 +8,14 @@ export class HttpClient {
     endpoint: string,
     body?: unknown,
   ): Promise<ApiResponse<T>> {
+    const token = localStorage.getItem('token');
     try {
       const options: RequestInit = {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: body ? JSON.stringify(body) : undefined,
       };
 
