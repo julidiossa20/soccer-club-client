@@ -7,9 +7,9 @@ import styles from './form-field.module.css';
 
 interface FormFieldProps {
   field: SchemaField;
-  value: FieldValue;
+  value?: FieldValue;
   error?: string | string[];
-  onChange: (key: string, value: FieldValue) => void;
+  onChange?: (key: string, value: FieldValue) => void;
 }
 
 // Normaliza error a string simple para componentes que no aceptan array
@@ -21,15 +21,28 @@ const toErrorArray = (error?: string | string[]) => (Array.isArray(error) ? erro
 export const FormField = ({ field, value, error, onChange }: FormFieldProps) => {
   const colSpanClass = field.colSpan === 2 ? styles['col-span-2'] : undefined;
 
+  const handleChange = (val: FieldValue) => {
+    onChange?.(field.key, val);
+  };
+
+  const commonProps = {
+    name: field.key,
+    label: field.label,
+    required: field.required,
+    disabled: field.disabled,
+    placeholder: field.placeholder,
+    helperText: field.helperText,
+  };
+
   if (field.type === 'checkbox') {
     return (
       <div className={colSpanClass}>
         <Checkbox
-          label={field.label}
-          checked={Boolean(value)}
-          disabled={field.disabled}
+          {...commonProps}
+          checked={value !== undefined ? Boolean(value) : undefined}
+          defaultChecked={value === undefined ? false : undefined}
           error={toSingleError(error)}
-          onChange={(e) => onChange(field.key, e.target.checked)}
+          onChange={(e) => handleChange(e.target.checked)}
         />
       </div>
     );
@@ -39,14 +52,12 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
     return (
       <div className={colSpanClass}>
         <Select
-          label={field.label}
+          {...commonProps}
           options={field.options}
-          value={String(value ?? '')}
-          required={field.required}
-          disabled={field.disabled}
-          helperText={field.helperText}
+          value={value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={value === undefined ? '' : undefined}
           error={toSingleError(error)}
-          onChange={(e) => onChange(field.key, e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
         />
       </div>
     );
@@ -56,15 +67,12 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
     return (
       <div className={colSpanClass}>
         <Textarea
-          label={field.label}
-          value={String(value ?? '')}
-          required={field.required}
-          disabled={field.disabled}
-          placeholder={field.placeholder}
-          helperText={field.helperText}
+          {...commonProps}
+          value={value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={value === undefined ? '' : undefined}
           rows={field.rows}
           error={toSingleError(error)}
-          onChange={(e) => onChange(field.key, e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
         />
       </div>
     );
@@ -74,20 +82,17 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
     return (
       <div className={colSpanClass}>
         <Input
-          label={field.label}
+          {...commonProps}
           type='number'
-          value={String(value ?? '')}
-          required={field.required}
-          disabled={field.disabled}
-          placeholder={field.placeholder}
-          helperText={field.helperText}
+          value={value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={value === undefined ? '' : undefined}
           leftIcon={field.leftIcon}
           rightIcon={field.rightIcon}
           min={field.min}
           max={field.max}
           step={field.step}
           error={toErrorArray(error)}
-          onChange={(e) => onChange(field.key, e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
         />
       </div>
     );
@@ -97,19 +102,16 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
     return (
       <div className={colSpanClass}>
         <Input
-          label={field.label}
+          {...commonProps}
           type='date'
-          value={String(value ?? '')}
-          required={field.required}
-          disabled={field.disabled}
-          placeholder={field.placeholder}
-          helperText={field.helperText}
+          value={value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={value === undefined ? '' : undefined}
           leftIcon={field.leftIcon}
           rightIcon={field.rightIcon}
           min={field.min}
           max={field.max}
           error={toErrorArray(error)}
-          onChange={(e) => onChange(field.key, e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
         />
       </div>
     );
@@ -119,17 +121,14 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
   return (
     <div className={colSpanClass}>
       <Input
-        label={field.label}
+        {...commonProps}
         type={field.type}
-        value={String(value ?? '')}
-        required={field.required}
-        disabled={field.disabled}
-        placeholder={field.placeholder}
-        helperText={field.helperText}
+        value={value !== undefined ? String(value ?? '') : undefined}
+        defaultValue={value === undefined ? '' : undefined}
         leftIcon={field.leftIcon}
         rightIcon={field.rightIcon}
         error={toErrorArray(error)}
-        onChange={(e) => onChange(field.key, e.target.value)}
+        onChange={(e) => handleChange(e.target.value)}
       />
     </div>
   );

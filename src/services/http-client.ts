@@ -1,13 +1,16 @@
 import type { ApiResponse, IErrorResponse } from './types';
+import { setToast } from './setToast';
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000';
 
 export class HttpClient {
+  static #toast = setToast();
   static async request<T>(
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
     endpoint: string,
     body?: unknown,
   ): Promise<ApiResponse<T>> {
+    const { error: errorToast, success: successToast } = this.#toast;
     const token = localStorage.getItem('token');
     try {
       const options: RequestInit = {
@@ -20,11 +23,21 @@ export class HttpClient {
       };
 
       const res = await fetch(`${API_BASE_URL}${endpoint}`, options);
-      const data = (await res.json()) as ApiResponse<T>;
 
-      // Al retornar directamente data, estamos confiando en que el backend
-      // ya devolvió el objeto ApiResponse estandarizado.
-      // Sin embargo, si res.ok es false, el backend debería haber devuelto IErrorResponse.
+      let data: ApiResponse<T>;
+      try {
+        data = (await res.json()) as ApiResponse<T>;
+      } catch {
+        errorToast(`Error del servidor (${res.status}). No se recibió una respuesta válida.`);
+        return {
+          success: false,
+          status: res.status,
+          message: `Error del servidor (${res.status}). No se recibió una respuesta válida.`,
+          errors: [],
+        } as unknown as ApiResponse<T>;
+      }
+
+      successToast(data.message);
       return data;
     } catch (error) {
       // Manejar errores de red o excepciones imprevistas
@@ -34,6 +47,7 @@ export class HttpClient {
         message: error instanceof Error ? error.message : 'Error desconocido de red',
         errors: [],
       };
+      errorToast(errorResponse.message);
       return errorResponse;
     }
   }

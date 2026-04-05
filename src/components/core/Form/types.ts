@@ -93,12 +93,21 @@ export type FieldType = SchemaField['type'];
 
 export interface FormProps<T extends SchemaField[]> {
   schema: T;
-  values: Record<string, FieldValue>;
+  /** Valores actuales del formulario (opcional si es no controlado) */
+  values?: Record<string, FieldValue>;
+  /** Errores por campo */
   errors?: Record<string, string | string[]>;
-  onChange: (key: string, value: FieldValue) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  /** Handler de cambio (opcional si es no controlado) */
+  onChange?: (key: string, value: FieldValue) => void;
+  /** Handler de envío (opcional si se usa React Router action) */
+  onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  /** Método HTTP para React Router Form (post, get, put, etc) */
+  method?: 'post' | 'get' | 'put' | 'patch' | 'delete';
+  /** Action URL para React Router */
+  action?: string;
   /** Número de columnas del grid. Default: 1 */
   columns?: 1 | 2;
+  /** Estado de carga manual (el botón usa useFormStatus por defecto) */
   isLoading?: boolean;
   submitLabel?: string;
   onCancel?: () => void;

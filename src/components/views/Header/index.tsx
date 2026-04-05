@@ -13,7 +13,7 @@ const nav = ({ isAdmin, isAuthenticated }: { isAdmin: boolean; isAuthenticated: 
     { to: '/news', title: 'Noticias', visible: true },
     { to: '/admin', title: 'Admin', visible: isAdmin },
     { to: '/profile', title: 'Perfil', visible: isAuthenticated },
-    { to: '/login', title: 'Login', visible: !isAuthenticated },
+    { to: 'auth/login', title: 'Login', visible: !isAuthenticated },
   ];
 };
 

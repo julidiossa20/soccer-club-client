@@ -1,71 +1,56 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Layout from '../components/layout';
-import Home from '../components/pages/Home';
-import Login from '../components/pages/Login';
+import Home from '../components/pages/Navigation/Home';
+
 import NotFound from './components/NotFound/NotFound';
-import Register from '../components/pages/Register';
-import ProtectedAuth from './components/ProtectedAuth';
 
-const Auth = {
-  path: '/',
-  element: <ProtectedAuth />,
-  children: [
-    {
-      path: '/login',
-      element: <Login />,
-    },
-    {
-      path: 'registro',
-      element: <Register />,
-    },
-    // {
-    //   path: 'reset',
-    //   element: <Reset />,
-    // },
-    // {
-    //   path: 'change',
-    //   element: <Change />,
-    // },
-  ],
-};
+import Auth from '../components/pages/Auth';
+import Login from '../components/pages/Auth/Login';
+import { authLoader } from '../components/pages/Auth/Login/authLoader';
+import { loginAction } from '../components/pages/Auth/Login/loginAction';
+import Register from '../components/pages/Auth/Register';
+import Navigation from '../components/pages/Navigation';
+import RootExecutor from './components/RootExecutor';
+import loaderRoot from './components/RootExecutor/loaderRoot';
 
-// const Feature = [
-// 	{
-// 		path: '/',
-// 		element: (
-// 			<Layout>
-// 				<Home />
-// 			</Layout>
-// 		),
-// 	},
-// 	{ path: '*', element: <NotFound /> },
-// ];
-
-// const Dash = {
-// 	path: '/',
-// 	element: <ProtectedDash />,
-// 	children: [
-// 		{
-// 			path: '/dashboard',
-// 			element: (
-// 				<Layout>
-// 					<Dashboard />
-// 				</Layout>
-// 			),
-// 		},
-// 	],
-// };
-
-const Feature = [
+const router = createBrowserRouter([
   {
-    path: '/',
-    element: (
-      <Layout>
-        <Home />
-      </Layout>
-    ),
+    element: <RootExecutor />,
+    loader: loaderRoot,
+    children: [
+      {
+        path: '/',
+        element: <Navigation />,
+        children: [
+          {
+            index: true,
+            element: <Home />,
+          },
+        ],
+      },
+      {
+        path: '/auth',
+        element: <Auth />,
+        // loader: layoutLoader,
+        children: [
+          {
+            path: 'login',
+            loader: authLoader,
+            action: loginAction,
+            element: <Login />,
+          },
+          {
+            path: 'registro',
+            loader: authLoader,
+            element: <Register />,
+          },
+        ],
+      },
+    ],
   },
-];
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+]);
 
-const router = createBrowserRouter([...Feature, Auth, { path: '*', element: <NotFound /> }]);
 export default router;

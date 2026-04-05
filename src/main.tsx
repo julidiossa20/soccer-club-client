@@ -13,9 +13,6 @@ if (rootElement) {
     <StrictMode>
       <Provider store={store}>
         <RouterProvider router={router} />
-        {/* <BrowserRouter>
-          <App />
-        </BrowserRouter> */}
       </Provider>
     </StrictMode>,
   );
