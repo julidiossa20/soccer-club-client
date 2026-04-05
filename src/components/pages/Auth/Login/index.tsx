@@ -1,6 +1,7 @@
 import { AtSign, KeyRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Form, type SchemaField } from '../../../core/Form';
+import { Button } from '../../../core/Button/Button';
 
 const loginSchema = [
   {
@@ -30,6 +31,13 @@ const Login = () => {
         <h2 style={{ textAlign: 'center', marginBottom: '30px', color: 'var(--primary-color)' }}>CLUB LOGIN</h2>
 
         <Form schema={loginSchema} method='post' submitLabel='Iniciar Sesión' onCancel={() => void navigate(-1)} />
+        <Button type='button' variant='ghost' size='md' onClick={() => void navigate('/auth/change')}>
+          Olvido contraseña
+        </Button>
+
+        <Button type='button' variant='ghost' size='md' onClick={() => void navigate('/auth/register')}>
+          Crear cuenta
+        </Button>
       </div>
     </div>
   );
