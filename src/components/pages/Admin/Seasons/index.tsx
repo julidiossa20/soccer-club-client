@@ -77,19 +77,19 @@ export default function AdminSeasons() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-    
+
     if (currentSeason?.id) {
-       setSeasons(seasons.map(s => s.id === currentSeason.id ? { ...s, ...data } as SeasonData : s));
+      setSeasons(seasons.map((s) => (s.id === currentSeason.id ? ({ ...s, ...data } as SeasonData) : s)));
     } else {
-       const newSeason: SeasonData = {
-         id: Math.max(...seasons.map(s => s.id)) + 1,
-         name: data.name as string,
-         year: data.year as string,
-         startDate: data.startDate as string,
-         endDate: data.endDate as string,
-         status: data.status as any
-       };
-       setSeasons([...seasons, newSeason]);
+      const newSeason: SeasonData = {
+        id: Math.max(...seasons.map((s) => s.id)) + 1,
+        name: data.name as string,
+        year: data.year as string,
+        startDate: data.startDate as string,
+        endDate: data.endDate as string,
+        status: data.status as any,
+      };
+      setSeasons([...seasons, newSeason]);
     }
     setIsModalOpen(false);
   };
@@ -99,58 +99,60 @@ export default function AdminSeasons() {
     { key: 'year', label: 'Año' },
     { key: 'startDate', label: 'Inicio' },
     { key: 'endDate', label: 'Fin' },
-    { 
-        key: 'status', 
-        label: 'Estado',
-        render: (val: string) => (
-             <span style={{ 
-                padding: '2px 8px', 
-                background: val === 'active' ? 'var(--success-light)' : val === 'finished' ? 'var(--gray-100)' : 'var(--info-light)', 
-                color: val === 'active' ? 'var(--success-color)' : val === 'finished' ? 'var(--gray-600)' : 'var(--info-color)',
-                borderRadius: '10px',
-                fontSize: '0.8rem',
-                fontWeight: 600
-             }}>
-                {val.toUpperCase()}
-             </span>
-        )
+    {
+      key: 'status',
+      label: 'Estado',
+      render: (val: string) => (
+        <span
+          style={{
+            padding: '2px 8px',
+            background:
+              val === 'active' ? 'var(--success-light)' : val === 'finished' ? 'var(--gray-100)' : 'var(--info-light)',
+            color:
+              val === 'active' ? 'var(--success-color)' : val === 'finished' ? 'var(--gray-600)' : 'var(--info-color)',
+            borderRadius: '10px',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+          }}>
+          {val.toUpperCase()}
+        </span>
+      ),
     },
   ];
 
   const actions = [
     { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
-    { 
-        label: 'Borrar', 
-        icon: <Trash size={16} />, 
-        variant: 'danger' as const, 
-        onClick: (s: SeasonData) => {
-            if(window.confirm(`¿Eliminar la temporada ${s.name}?`)) {
-                setSeasons(seasons.filter(item => item.id !== s.id));
-            }
-        } 
-    }
+    {
+      label: 'Borrar',
+      icon: <Trash size={16} />,
+      variant: 'danger' as const,
+      onClick: (s: SeasonData) => {
+        if (window.confirm(`¿Eliminar la temporada ${s.name}?`)) {
+          setSeasons(seasons.filter((item) => item.id !== s.id));
+        }
+      },
+    },
   ];
 
   return (
     <div style={{ width: '100%' }}>
       <DataGrid
-        idKey="id"
-        title="Gestión de Temporadas"
+        idKey='id'
+        title='Gestión de Temporadas'
         data={seasons}
         columns={columns}
         onAdd={handleOpenAdd}
-        addLabel="Nueva Temporada"
+        addLabel='Nueva Temporada'
         actions={actions}
       />
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        title={currentSeason ? 'Editar Temporada' : 'Nueva Temporada'}
-      >
-        <Form 
-          schema={seasonFormSchema} 
-          values={currentSeason ?? {}} 
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={currentSeason ? 'Editar Temporada' : 'Nueva Temporada'}>
+        <Form
+          schema={seasonFormSchema}
+          values={currentSeason ?? {}}
           onSubmit={handleSave}
           submitLabel={currentSeason ? 'Guardar Cambios' : 'Crear Temporada'}
           onCancel={() => setIsModalOpen(false)}

@@ -15,7 +15,7 @@ import {
   BarChart3,
   ChevronDown,
   ChevronRight,
-  Briefcase
+  Briefcase,
 } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -31,15 +31,15 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { path: '/admin', label: 'Inicio', icon: <LayoutDashboard size={20} />, end: true },
-  { 
-    label: 'Club', 
+  {
+    label: 'Club',
     icon: <Trophy size={20} />,
     children: [
       { path: '/admin/equipos', label: 'Equipos', icon: <Trophy size={16} /> },
       { path: '/admin/jugadores', label: 'Jugadores', icon: <UserCircle size={16} /> },
       { path: '/admin/entrenadores', label: 'Cuerpo Técnico', icon: <Users size={16} /> },
       { path: '/admin/historia', label: 'Historia', icon: <History size={16} /> },
-    ]
+    ],
   },
   {
     label: 'Competición',
@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
       { path: '/admin/temporadas', label: 'Temporadas', icon: <Calendar size={16} /> },
       { path: '/admin/partidos', label: 'Calendario', icon: <Calendar size={16} /> },
       { path: '/admin/posiciones', label: 'Posiciones', icon: <BarChart3 size={16} /> },
-    ]
+    ],
   },
   {
     label: 'Contenido',
@@ -58,15 +58,15 @@ const navItems: NavItem[] = [
       { path: '/admin/noticias', label: 'Noticias', icon: <Newspaper size={16} /> },
       { path: '/admin/patrocinadores', label: 'Patrocinadores', icon: <Briefcase size={16} /> },
       { path: '/admin/media', label: 'Galería', icon: <ImageIcon size={16} /> },
-    ]
+    ],
   },
-  { 
-    label: 'Ajustes', 
+  {
+    label: 'Ajustes',
     icon: <Edit3 size={20} />,
     children: [
       { path: '/admin/usuarios', label: 'Usuarios', icon: <Users size={16} /> },
       { path: '/admin/site-editor', label: 'Editor Visual', icon: <Edit3 size={16} /> },
-    ]
+    ],
   },
 ];
 
@@ -75,9 +75,7 @@ export default function AdminLayout() {
   const [openMenus, setOpenMenus] = useState<string[]>(['Club']);
 
   const toggleMenu = (label: string) => {
-    setOpenMenus((prev) => 
-      prev.includes(label) ? prev.filter((m) => m !== label) : [...prev, label]
-    );
+    setOpenMenus((prev) => (prev.includes(label) ? prev.filter((m) => m !== label) : [...prev, label]));
   };
 
   const handleLogout = () => {
@@ -107,10 +105,7 @@ export default function AdminLayout() {
                   </NavLink>
                 ) : (
                   <div className={styles['admin__nav-group']}>
-                    <button 
-                      className={styles['admin__nav-toggle']} 
-                      onClick={() => toggleMenu(item.label)}
-                    >
+                    <button className={styles['admin__nav-toggle']} onClick={() => toggleMenu(item.label)}>
                       <div className={styles['admin__nav-toggle-label']}>
                         {item.icon}
                         <span>{item.label}</span>

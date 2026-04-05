@@ -1,55 +1,163 @@
 .header {
-  position: relative;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1000;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 0 1.3rem;
+  width: 100%;
+  height: 4.8rem;
+  padding: 0 6%;
+  font-family: var(--font-family);
+  background: var(--primary-color);
+  box-shadow: 0 4px 20px rgb(0 0 0 / 0.3);
+  backdrop-filter: blur(10px);
 }
 
 .header__logo {
   display: flex;
-  gap: 0.62rem;
   align-items: center;
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--px12);
+  color: white;
+  text-decoration: none;
+}
+
+.header__club-name {
+  font-family: Outfit, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.header__icon {
+  color: var(--secondary-color);
 }
 
 .header__nav {
   display: flex;
-}
-
-.header__nav-menu--button {
-  font-size: 1.5rem;
-  color: var(--text-color-white);
-  cursor: pointer;
-  background: none;
-  border: none;
+  align-items: center;
 }
 
 .header__nav-container {
   display: flex;
-  gap: 1.3rem;
+  align-items: center;
+  gap: var(--px35);
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
-.header__nav-container.mobile {
-  position: absolute;
-  top: 3.4rem;
-  left: 0;
-  z-index: 99;
-  display: flex;
-  flex-direction: column;
-  gap: 0.93rem;
-  width: 100%;
-  padding: 1.3rem;
-  text-align: center;
-  background: var(--primary-color);
-  box-shadow: var(--shadow-xl);
-  transform: translateY(-150%);
-  transition: transform 0.3s ease;
-}
-
-.header__nav-container.mobile.open {
-  transform: translateY(0);
+.header__nav-container li a {
+  position: relative;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
 }
 
 .header__nav-container li a:hover {
-  color: var(--secondary-color);
+  color: white;
+}
+
+.header__link--active {
+  color: white !important;
+}
+
+.header__link--active::after {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 3px;
+  content: '';
+  background: var(--secondary-color);
+  border-radius: 2px;
+}
+
+.header__divider {
+  width: 1px;
+  height: var(--px24);
+  margin: 0 var(--px15);
+  background: white;
+  opacity: 0.1;
+}
+
+.header__admin-link {
+  color: var(--secondary-color) !important;
+  font-weight: 800 !important;
+}
+
+.header__profile-link {
+  padding: var(--px10) var(--px20);
+  color: white !important;
+  background: rgb(255 255 255 / 0.1);
+  border-radius: 30px;
+}
+
+.header__login-btn {
+  padding: var(--px10) var(--px24);
+  color: white !important;
+  background: var(--secondary-color);
+  border-radius: 30px;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 10px rgb(229 0 0 / 0.3);
+}
+
+.header__login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgb(229 0 0 / 0.5);
+}
+
+.header__menu-btn {
+  display: none;
+  color: white;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: var(--px8);
+}
+
+@media (max-width: 62rem) {
+  .header__menu-btn {
+    display: block;
+  }
+
+  .header__nav-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 2000;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    padding: var(--px80) var(--px20);
+    background: var(--primary-color);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+  .header__nav-container--open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .header__divider {
+    display: none;
+  }
 }

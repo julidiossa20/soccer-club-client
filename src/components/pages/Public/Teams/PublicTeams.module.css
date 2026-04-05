@@ -1,0 +1,72 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18.75rem, 1fr));
+  gap: var(--px35);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--px20);
+  padding: var(--px24);
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.card__logo {
+  width: 3.75rem;
+  height: 3.75rem;
+  object-fit: contain;
+}
+
+.card__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.card__name {
+  margin-bottom: var(--px4);
+  font-size: 1.25rem;
+}
+
+.card__league {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px12);
+  padding: var(--px24);
+}
+
+.card__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--px10);
+  font-size: 0.9rem;
+  color: var(--gray-600);
+}
+
+.card__footer {
+  padding: var(--px24);
+  margin-top: auto;
+}

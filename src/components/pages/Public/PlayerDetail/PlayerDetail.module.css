@@ -1,0 +1,196 @@
+.pdp {
+  min-height: 100vh;
+  background: var(--gray-100);
+}
+
+.pdp__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 60vh;
+  min-height: 25rem;
+  padding: var(--px40) 0;
+  overflow: hidden;
+  color: white;
+  background: var(--primary-color);
+}
+
+.pdp__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, var(--primary-color) 0%, rgb(0 0 0 / 0.4) 100%);
+}
+
+.pdp__container {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 68.75rem;
+  padding: 0 var(--px20);
+  margin: 0 auto;
+}
+
+.pdp__layout {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--px40);
+}
+
+.pdp__imageWrapper {
+  position: relative;
+  width: 18.75rem;
+  aspect-ratio: 1 / 1.25;
+  overflow: hidden;
+  border: 4px solid white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+.pdp__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdp__badge {
+  position: absolute;
+  top: var(--px10);
+  right: var(--px15);
+  font-size: 5rem;
+  font-weight: 900;
+  opacity: 0.9;
+  text-shadow: 0 4px 15px rgb(0 0 0 / 0.5);
+}
+
+.pdp__info {
+  flex: 1;
+}
+
+.pdp__posBadge {
+  display: inline-block;
+  padding: var(--px4) var(--px12);
+  margin-bottom: var(--px10);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-sm);
+}
+
+.pdp__name {
+  margin: 0 0 var(--px20);
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.pdp__meta {
+  display: flex;
+  gap: var(--px30);
+}
+
+.pdp__metaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--px8);
+  font-size: 1rem;
+  color: var(--gray-300);
+}
+
+.pdp__statsSection {
+  padding: var(--px80) 0;
+}
+
+.pdp__statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  gap: var(--px24);
+  margin-bottom: var(--px40);
+}
+
+.pdp__statCard {
+  padding: var(--px30);
+  text-align: center;
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.pdp__statLabel {
+  display: block;
+  margin-bottom: var(--px10);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+}
+
+.pdp__statValue {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--primary-color);
+}
+
+.pdp__detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  gap: var(--px32);
+}
+
+.pdp__card {
+  padding: var(--px40);
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.pdp__cardTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--px12);
+  padding-bottom: var(--px15);
+  margin-bottom: var(--px30);
+  font-size: 1.25rem;
+  border-bottom: 2px solid var(--gray-100);
+}
+
+.pdp__attributes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px15);
+}
+
+.pdp__attr {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: var(--px10);
+  border-bottom: 1px dashed var(--gray-100);
+}
+
+.pdp__attr label {
+  font-weight: 600;
+  color: var(--gray-500);
+}
+
+.pdp__attr span {
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.pdp__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pdp__table th {
+  padding: var(--px12);
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  text-align: left;
+}
+
+.pdp__table td {
+  padding: var(--px12);
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--gray-50);
+}

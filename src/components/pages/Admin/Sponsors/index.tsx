@@ -52,8 +52,22 @@ const sponsorFormSchema = [
 
 export default function AdminSponsors() {
   const [sponsors, setSponsors] = useState<SponsorData[]>([
-    { id: 1, name: 'Adidas', category: 'Technical', website: 'https://adidas.com', contractValue: 500000, status: 'active' },
-    { id: 2, name: 'Emirates', category: 'Main', website: 'https://emirates.com', contractValue: 2000000, status: 'active' },
+    {
+      id: 1,
+      name: 'Adidas',
+      category: 'Technical',
+      website: 'https://adidas.com',
+      contractValue: 500000,
+      status: 'active',
+    },
+    {
+      id: 2,
+      name: 'Emirates',
+      category: 'Main',
+      website: 'https://emirates.com',
+      contractValue: 2000000,
+      status: 'active',
+    },
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,19 +87,25 @@ export default function AdminSponsors() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-    
+
     if (currentSponsor?.id) {
-       setSponsors(sponsors.map(s => s.id === currentSponsor.id ? { ...s, ...data, contractValue: Number(data.contractValue) } as SponsorData : s));
+      setSponsors(
+        sponsors.map((s) =>
+          s.id === currentSponsor.id
+            ? ({ ...s, ...data, contractValue: Number(data.contractValue) } as SponsorData)
+            : s,
+        ),
+      );
     } else {
-       const newSponsor: SponsorData = {
-         id: Math.max(...sponsors.map(s => s.id)) + 1,
-         name: data.name as string,
-         category: data.category as string,
-         website: data.website as string,
-         contractValue: Number(data.contractValue),
-         status: 'active'
-       };
-       setSponsors([...sponsors, newSponsor]);
+      const newSponsor: SponsorData = {
+        id: Math.max(...sponsors.map((s) => s.id)) + 1,
+        name: data.name as string,
+        category: data.category as string,
+        website: data.website as string,
+        contractValue: Number(data.contractValue),
+        status: 'active',
+      };
+      setSponsors([...sponsors, newSponsor]);
     }
     setIsModalOpen(false);
   };
@@ -93,63 +113,63 @@ export default function AdminSponsors() {
   const columns = [
     { key: 'name', label: 'Marca' },
     { key: 'category', label: 'Categoría' },
-    { 
-        key: 'contractValue', 
-        label: 'Valor',
-        render: (val: number) => `$${val.toLocaleString()}`
+    {
+      key: 'contractValue',
+      label: 'Valor',
+      render: (val: number) => `$${val.toLocaleString()}`,
     },
-    { 
-        key: 'status', 
-        label: 'Estado',
-        render: (val: string) => (
-             <span style={{ 
-                padding: '2px 8px', 
-                background: val === 'active' ? 'var(--success-light)' : 'var(--error-light)', 
-                color: val === 'active' ? 'var(--success-color)' : 'var(--error-color)',
-                borderRadius: '10px',
-                fontSize: '0.8rem',
-                fontWeight: 600
-             }}>
-                {val.toUpperCase()}
-             </span>
-        )
+    {
+      key: 'status',
+      label: 'Estado',
+      render: (val: string) => (
+        <span
+          style={{
+            padding: '2px 8px',
+            background: val === 'active' ? 'var(--success-light)' : 'var(--error-light)',
+            color: val === 'active' ? 'var(--success-color)' : 'var(--error-color)',
+            borderRadius: '10px',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+          }}>
+          {val.toUpperCase()}
+        </span>
+      ),
     },
   ];
 
   const actions = [
     { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
-    { 
-        label: 'Borrar', 
-        icon: <Trash size={16} />, 
-        variant: 'danger' as const, 
-        onClick: (s: SponsorData) => {
-            if(window.confirm(`¿Eliminar patrocinio de ${s.name}?`)) {
-                setSponsors(sponsors.filter(item => item.id !== s.id));
-            }
-        } 
-    }
+    {
+      label: 'Borrar',
+      icon: <Trash size={16} />,
+      variant: 'danger' as const,
+      onClick: (s: SponsorData) => {
+        if (window.confirm(`¿Eliminar patrocinio de ${s.name}?`)) {
+          setSponsors(sponsors.filter((item) => item.id !== s.id));
+        }
+      },
+    },
   ];
 
   return (
     <div style={{ width: '100%' }}>
       <DataGrid
-        idKey="id"
-        title="Gestión de Patrocinadores"
+        idKey='id'
+        title='Gestión de Patrocinadores'
         data={sponsors}
         columns={columns}
         onAdd={handleOpenAdd}
-        addLabel="Nuevo Patrocinador"
+        addLabel='Nuevo Patrocinador'
         actions={actions}
       />
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        title={currentSponsor ? 'Editar Patrocinador' : 'Nuevo Patrocinador'}
-      >
-        <Form 
-          schema={sponsorFormSchema} 
-          values={currentSponsor ?? {}} 
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={currentSponsor ? 'Editar Patrocinador' : 'Nuevo Patrocinador'}>
+        <Form
+          schema={sponsorFormSchema}
+          values={currentSponsor ?? {}}
           onSubmit={handleSave}
           submitLabel={currentSponsor ? 'Guardar Cambios' : 'Crear Patrocinador'}
           onCancel={() => setIsModalOpen(false)}

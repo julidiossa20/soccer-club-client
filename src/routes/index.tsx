@@ -30,8 +30,12 @@ import AdminNews from '../components/pages/Admin/News';
 import AdminSiteEditor from '../components/pages/Admin/SiteEditor';
 import AdminLeagues from '../components/pages/Admin/Leagues';
 import AdminSeasons from '../components/pages/Admin/Seasons';
-import AdminSponsors from '../components/pages/Admin/Sponsors';
 import AdminPlaceholder from '../components/pages/Admin/Placeholder';
+
+// Public Imports
+import PublicTeams from '../components/pages/Public/Teams';
+import PublicPlayers from '../components/pages/Public/Players';
+import PlayerDetail from '../components/pages/Public/PlayerDetail';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +53,22 @@ const router = createBrowserRouter([
           {
             path: 'profile',
             element: <Profile />,
+          },
+          {
+            path: 'equipos',
+            element: <PublicTeams />,
+          },
+          {
+            path: 'jugadores',
+            element: <PublicPlayers />,
+          },
+          {
+            path: 'jugadores/:id',
+            element: <PlayerDetail />,
+          },
+          {
+            path: 'noticias',
+            element: <AdminPlaceholder title='Blog de Noticias' />,
           },
         ],
       },
@@ -103,7 +123,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'patrocinadores',
-            element: <AdminSponsors />,
+            element: <AdminPlaceholder title='Gestión de Patrocinadores' />,
           },
           {
             path: 'media',
