@@ -10,8 +10,9 @@ namespace Login {
     id: number;
     email: string;
     name: string;
-    avatar: null;
+    avatar: string | null;
     token: string;
+    role: 'admin' | 'user' | 'editor';
   }
 
   interface TBody {

@@ -42,6 +42,10 @@ export interface PasswordField extends BaseInputField {
   type: 'password';
 }
 
+export interface TelField extends BaseInputField {
+  type: 'tel';
+}
+
 export interface NumberField extends BaseInputField {
   type: 'number';
   min?: number;
@@ -70,7 +74,7 @@ export interface CheckboxField extends BaseField {
 
 // ─── Select ───────────────────────────────────────────────────────────────────
 
-export interface SelectField extends BaseField {
+export interface SelectField extends BaseInputField {
   type: 'select';
   options: Option[];
 }
@@ -81,6 +85,7 @@ export type SchemaField =
   | TextField
   | EmailField
   | PasswordField
+  | TelField
   | NumberField
   | DateField
   | TextareaField

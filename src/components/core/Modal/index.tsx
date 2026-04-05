@@ -1,0 +1,36 @@
+import { X } from 'lucide-react';
+import { useEffect } from 'react';
+import styles from './Modal.module.css';
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className={styles.modal__overlay} onClick={onClose}>
+      <div className={styles.modal__content} onClick={(e) => e.stopPropagation()}>
+        <header className={styles.modal__header}>
+          <h3>{title}</h3>
+          <button className={styles.modal__close} onClick={onClose}>
+            <X size={20} />
+          </button>
+        </header>
+        <div className={styles.modal__body}>{children}</div>
+      </div>
+    </div>
+  );
+};
