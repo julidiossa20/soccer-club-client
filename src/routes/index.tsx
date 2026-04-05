@@ -4,9 +4,9 @@ import Home from '../components/pages/Navigation/Home';
 import NotFound from './components/NotFound/NotFound';
 
 import Auth from '../components/pages/Auth';
+import { authLoader } from '../components/pages/Auth/authLoader';
 import Change from '../components/pages/Auth/Change';
 import Login from '../components/pages/Auth/Login';
-import { authLoader } from '../components/pages/Auth/Login/authLoader';
 import { loginAction } from '../components/pages/Auth/Login/loginAction';
 import Register from '../components/pages/Auth/Register';
 import Reset from '../components/pages/Auth/Reset';

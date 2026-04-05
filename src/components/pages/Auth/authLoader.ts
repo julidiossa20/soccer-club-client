@@ -4,7 +4,7 @@ import { store } from '../../../store';
 /**
  * Loader to protect private routes.
  */
-export function protectedLoader() {
+export function authLoader() {
   const { auth } = store.getState();
   if (auth.isAuthenticated) {
     return redirect('/');
