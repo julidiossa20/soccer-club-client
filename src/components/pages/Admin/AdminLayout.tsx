@@ -8,22 +8,77 @@ import {
   Edit3,
   LogOut,
   ClipboardList,
+  ShieldAlert,
+  History,
+  Image as ImageIcon,
+  Award,
+  BarChart3,
+  ChevronDown,
+  ChevronRight,
+  Briefcase
 } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import styles from './AdminLayout.module.css';
 
-const navItems = [
+interface NavItem {
+  path?: string;
+  label: string;
+  icon: React.ReactNode;
+  end?: boolean;
+  children?: { path: string; label: string; icon: React.ReactNode }[];
+}
+
+const navItems: NavItem[] = [
   { path: '/admin', label: 'Inicio', icon: <LayoutDashboard size={20} />, end: true },
-  { path: '/admin/usuarios', label: 'Usuarios', icon: <Users size={20} /> },
-  { path: '/admin/equipos', label: 'Equipos', icon: <Trophy size={20} /> },
-  { path: '/admin/jugadores', label: 'Jugadores', icon: <UserCircle size={20} /> },
-  { path: '/admin/partidos', label: 'Partidos', icon: <Calendar size={20} /> },
-  { path: '/admin/noticias', label: 'Noticias', icon: <Newspaper size={20} /> },
-  { path: '/admin/site-editor', label: 'Editor Visual', icon: <Edit3 size={20} /> },
+  { 
+    label: 'Club', 
+    icon: <Trophy size={20} />,
+    children: [
+      { path: '/admin/equipos', label: 'Equipos', icon: <Trophy size={16} /> },
+      { path: '/admin/jugadores', label: 'Jugadores', icon: <UserCircle size={16} /> },
+      { path: '/admin/entrenadores', label: 'Cuerpo Técnico', icon: <Users size={16} /> },
+      { path: '/admin/historia', label: 'Historia', icon: <History size={16} /> },
+    ]
+  },
+  {
+    label: 'Competición',
+    icon: <Award size={20} />,
+    children: [
+      { path: '/admin/ligas', label: 'Ligas', icon: <ShieldAlert size={16} /> },
+      { path: '/admin/temporadas', label: 'Temporadas', icon: <Calendar size={16} /> },
+      { path: '/admin/partidos', label: 'Calendario', icon: <Calendar size={16} /> },
+      { path: '/admin/posiciones', label: 'Posiciones', icon: <BarChart3 size={16} /> },
+    ]
+  },
+  {
+    label: 'Contenido',
+    icon: <Newspaper size={20} />,
+    children: [
+      { path: '/admin/noticias', label: 'Noticias', icon: <Newspaper size={16} /> },
+      { path: '/admin/patrocinadores', label: 'Patrocinadores', icon: <Briefcase size={16} /> },
+      { path: '/admin/media', label: 'Galería', icon: <ImageIcon size={16} /> },
+    ]
+  },
+  { 
+    label: 'Ajustes', 
+    icon: <Edit3 size={20} />,
+    children: [
+      { path: '/admin/usuarios', label: 'Usuarios', icon: <Users size={16} /> },
+      { path: '/admin/site-editor', label: 'Editor Visual', icon: <Edit3 size={16} /> },
+    ]
+  },
 ];
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const [openMenus, setOpenMenus] = useState<string[]>(['Club']);
+
+  const toggleMenu = (label: string) => {
+    setOpenMenus((prev) => 
+      prev.includes(label) ? prev.filter((m) => m !== label) : [...prev, label]
+    );
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -35,20 +90,49 @@ export default function AdminLayout() {
       <aside className={styles.admin__sidebar}>
         <div className={styles['admin__sidebar-header']}>
           <h3>FUTBOL CLUB</h3>
-          <p>Admin Panel</p>
+          <p>Gestión Deportiva</p>
         </div>
 
         <nav className={styles['admin__sidebar-nav']}>
           <ul>
             {navItems.map((item) => (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
-                  end={item.end}
-                  className={({ isActive }) => (isActive ? styles['admin__link--active'] : '')}>
-                  {item.icon}
-                  <span>{item.label}</span>
-                </NavLink>
+              <li key={item.label}>
+                {item.path ? (
+                  <NavLink
+                    to={item.path}
+                    end={item.end}
+                    className={({ isActive }) => (isActive ? styles['admin__link--active'] : '')}>
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </NavLink>
+                ) : (
+                  <div className={styles['admin__nav-group']}>
+                    <button 
+                      className={styles['admin__nav-toggle']} 
+                      onClick={() => toggleMenu(item.label)}
+                    >
+                      <div className={styles['admin__nav-toggle-label']}>
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </div>
+                      {openMenus.includes(item.label) ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    </button>
+                    {openMenus.includes(item.label) && (
+                      <ul className={styles['admin__nav-sub']}>
+                        {item.children?.map((child) => (
+                          <li key={child.path}>
+                            <NavLink
+                              to={child.path}
+                              className={({ isActive }) => (isActive ? styles['admin__link--active'] : '')}>
+                              {child.icon}
+                              <span>{child.label}</span>
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -66,9 +150,10 @@ export default function AdminLayout() {
         <header className={styles['admin__main-header']}>
           <div className={styles.admin__breadcrumb}>
             <ClipboardList size={20} />
-            <span>Gestión Deportiva</span>
+            <span>Admin Dashboard</span>
           </div>
           <div className={styles['admin__user-info']}>
+            <div className={styles['admin__user-avatar']}>AJ</div>
             <span>Admin Juan</span>
           </div>
         </header>

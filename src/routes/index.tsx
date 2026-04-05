@@ -28,6 +28,10 @@ import AdminPlayers from '../components/pages/Admin/Players';
 import AdminMatches from '../components/pages/Admin/Matches';
 import AdminNews from '../components/pages/Admin/News';
 import AdminSiteEditor from '../components/pages/Admin/SiteEditor';
+import AdminLeagues from '../components/pages/Admin/Leagues';
+import AdminSeasons from '../components/pages/Admin/Seasons';
+import AdminSponsors from '../components/pages/Admin/Sponsors';
+import AdminPlaceholder from '../components/pages/Admin/Placeholder';
 
 const router = createBrowserRouter([
   {
@@ -70,12 +74,40 @@ const router = createBrowserRouter([
             element: <AdminPlayers />,
           },
           {
+            path: 'entrenadores',
+            element: <AdminPlaceholder title='Cuerpo Técnico' />,
+          },
+          {
+            path: 'historia',
+            element: <AdminPlaceholder title='Historia del Club' />,
+          },
+          {
+            path: 'ligas',
+            element: <AdminLeagues />,
+          },
+          {
+            path: 'temporadas',
+            element: <AdminSeasons />,
+          },
+          {
             path: 'partidos',
             element: <AdminMatches />,
           },
           {
+            path: 'posiciones',
+            element: <AdminPlaceholder title='Tablas de Posiciones' />,
+          },
+          {
             path: 'noticias',
             element: <AdminNews />,
+          },
+          {
+            path: 'patrocinadores',
+            element: <AdminSponsors />,
+          },
+          {
+            path: 'media',
+            element: <AdminPlaceholder title='Galería de Media' />,
           },
           {
             path: 'site-editor',
