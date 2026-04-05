@@ -32,11 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/auth',
         element: <Auth />,
-        // loader: layoutLoader,
+        loader: authLoader,
         children: [
           {
             path: 'login',
-            loader: authLoader,
             action: loginAction,
             element: <Login />,
           },
