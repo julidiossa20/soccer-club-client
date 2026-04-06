@@ -9,21 +9,22 @@ const navLinks = [
   { to: '/', title: 'Home' },
   { to: '/equipos', title: 'Equipos' },
   { to: '/jugadores', title: 'Plantilla' },
+  { to: '/programacion', title: 'Programación' },
   { to: '/noticias', title: 'Noticias' },
 ];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'editor';
+  const isAdmin = true;
+  // const isAdmin = user?.role === 'admin' || user?.role === 'editor';
 
   const closeMenu = () => setMenuOpen(false);
-  
-  const navClasses = [
-    styles['header__nav-container'], 
-    menuOpen && styles['header__nav-container--open']
-  ].filter(Boolean).join(' ');
+
+  const navClasses = [styles['header__nav-container'], menuOpen && styles['header__nav-container--open']]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <nav className={styles.header}>
@@ -40,16 +41,15 @@ export default function Header() {
         <ul className={navClasses}>
           {navLinks.map(({ title, to }) => (
             <li key={title}>
-              <NavLink 
-                to={to} 
+              <NavLink
+                to={to}
                 onClick={closeMenu}
-                className={({ isActive }) => isActive ? styles['header__link--active'] : ''}
-              >
+                className={({ isActive }) => (isActive ? styles['header__link--active'] : '')}>
                 {title}
               </NavLink>
             </li>
           ))}
-          
+
           <div className={styles.header__divider} />
 
           {isAdmin && (

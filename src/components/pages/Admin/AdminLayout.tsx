@@ -48,6 +48,7 @@ const navItems: NavItem[] = [
       { path: '/admin/ligas', label: 'Ligas', icon: <ShieldAlert size={16} /> },
       { path: '/admin/temporadas', label: 'Temporadas', icon: <Calendar size={16} /> },
       { path: '/admin/partidos', label: 'Calendario', icon: <Calendar size={16} /> },
+      { path: '/admin/planeacion-partidos', label: 'Planeación', icon: <ClipboardList size={16} /> },
       { path: '/admin/posiciones', label: 'Posiciones', icon: <BarChart3 size={16} /> },
     ],
   },

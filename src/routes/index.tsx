@@ -13,6 +13,7 @@ import Register from '../components/pages/Auth/Register';
 import { registerAction } from '../components/pages/Auth/Register/registerAction';
 import Reset from '../components/pages/Auth/Reset';
 import { resetAction } from '../components/pages/Auth/Reset/resetAction';
+import { matchAction } from '../actions/matchAction';
 import Navigation from '../components/pages/Navigation';
 import Profile from '../components/pages/Profile';
 import RootExecutor from './components/RootExecutor';
@@ -31,11 +32,13 @@ import AdminSiteEditor from '../components/pages/Admin/SiteEditor';
 import AdminLeagues from '../components/pages/Admin/Leagues';
 import AdminSeasons from '../components/pages/Admin/Seasons';
 import AdminPlaceholder from '../components/pages/Admin/Placeholder';
+import MatchPlanning from '../components/pages/Admin/MatchPlanning';
 
 // Public Imports
 import PublicTeams from '../components/pages/Public/Teams';
 import PublicPlayers from '../components/pages/Public/Players';
 import PlayerDetail from '../components/pages/Public/PlayerDetail';
+import MatchProgrammingPublic from '../components/pages/Public/MatchProgramming';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +68,10 @@ const router = createBrowserRouter([
           {
             path: 'jugadores/:id',
             element: <PlayerDetail />,
+          },
+          {
+            path: 'programacion',
+            element: <MatchProgrammingPublic />,
           },
           {
             path: 'noticias',
@@ -112,6 +119,11 @@ const router = createBrowserRouter([
           {
             path: 'partidos',
             element: <AdminMatches />,
+          },
+          {
+            path: 'planeacion-partidos',
+            action: matchAction,
+            element: <MatchPlanning />,
           },
           {
             path: 'posiciones',

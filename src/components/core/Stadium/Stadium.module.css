@@ -1,0 +1,115 @@
+.stadium {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: var(--success-color);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--success-color),
+    var(--success-color) 10%,
+    #388e3c 10%,
+    #388e3c 20%
+  );
+  border: var(--px4) solid var(--gray-50);
+  border-radius: var(--px8);
+  box-shadow: 0 var(--px10) var(--px30) rgb(0 0 0 / 0.3);
+}
+
+.stadium__container {
+  padding: var(--px30);
+  margin: var(--px20) 0;
+  background-color: var(--gray-50);
+  border-radius: var(--px10);
+  box-shadow: var(--shadow-lg);
+}
+
+.stadium__title {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: var(--px30);
+}
+
+.stadium__line--center {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: var(--px2);
+  background-color: rgb(255 255 255 / 0.8);
+  transform: translateX(-50%);
+}
+
+.stadium__circle--center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20%;
+  aspect-ratio: 1;
+  border: var(--px2) solid rgb(255 255 255 / 0.8);
+  border-radius: var(--border-radius-50);
+  transform: translate(-50%, -50%);
+}
+
+.stadium__spot--center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--px4);
+  height: var(--px4);
+  background-color: var(--gray-50);
+  border-radius: var(--border-radius-50);
+  transform: translate(-50%, -50%);
+}
+
+.stadium__penalty-area {
+  position: absolute;
+  top: 25%;
+  width: 15%;
+  height: 50%;
+  border: var(--px2) solid rgb(255 255 255 / 0.8);
+}
+
+.stadium__penalty-area--left {
+  left: 0;
+  border-left: none;
+}
+
+.stadium__penalty-area--right {
+  right: 0;
+  border-right: none;
+}
+
+.stadium__player {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--px60);
+  transition: transform 0.3s ease;
+}
+
+.stadium__player-photo {
+  width: var(--px50);
+  height: var(--px50);
+  object-fit: cover;
+  background-color: var(--gray-50);
+  border: var(--px3) solid var(--secondary-color);
+  border-radius: var(--border-radius-50);
+  box-shadow: 0 var(--px4) var(--px10) rgb(0 0 0 / 0.2);
+}
+
+.stadium__player-name {
+  color: var(--gray-50);
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background-color: rgb(0 0 0 / 0.6);
+  border-radius: var(--px4);
+  padding: var(--px2) var(--px6);
+  margin-top: var(--px5);
+}
