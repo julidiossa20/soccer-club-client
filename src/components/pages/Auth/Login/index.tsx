@@ -1,7 +1,8 @@
-import { AtSign, KeyRound } from 'lucide-react';
+import { AtSign, KeyRound, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Form, type SchemaField } from '../../../core/Form';
 import { Button } from '../../../core/Button/Button';
+import styles from '../auth.module.css';
 
 const loginSchema = [
   {
@@ -26,18 +27,28 @@ const Login = () => {
   const navigate = useNavigate();
 
   return (
-    <div className='container' style={{ padding: '80px 20px', display: 'flex', justifyContent: 'center' }}>
-      <div className='card' style={{ width: '100%', maxWidth: '400px', padding: '40px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '30px', color: 'var(--primary-color)' }}>CLUB LOGIN</h2>
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
+        <div className={styles.brand}>
+          <div className={styles.brand__icon}>
+            <ShieldCheck size={28} color='white' />
+          </div>
+          <h2 className={styles.brand__title}>Acceso al Club</h2>
+          <p className={styles.brand__subtitle}>Introduce tus credenciales para continuar</p>
+        </div>
 
-        <Form schema={loginSchema} method='post' submitLabel='Iniciar Sesión' onCancel={() => void navigate(-1)} />
-        <Button type='button' variant='ghost' size='md' onClick={() => void navigate('/auth/change')}>
-          Olvido contraseña
-        </Button>
+        <Form schema={loginSchema} method='post' onCancel={()=> void navigate('/')} submitLabel='Iniciar Sesión' />
 
-        <Button type='button' variant='ghost' size='md' onClick={() => void navigate('/auth/register')}>
-          Crear cuenta
-        </Button>
+        <div className={styles.divider}>o</div>
+
+        <div className={styles.links}>
+          <Button type='button' variant='ghost' size='sm' onClick={() => void navigate('/auth/reset')}>
+            Olvidé mi contraseña
+          </Button>
+          <Button type='button' variant='outline' size='sm' onClick={() => void navigate('/auth/register')}>
+            Crear cuenta nueva
+          </Button>
+        </div>
       </div>
     </div>
   );

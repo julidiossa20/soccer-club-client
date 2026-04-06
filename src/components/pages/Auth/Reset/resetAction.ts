@@ -18,7 +18,7 @@ export async function resetAction({ request }: { request: Request }) {
   }
 
   try {
-    const response = await HttpClient.post('/api/v1/user/reset-password-request', {
+    const response = await HttpClient.post('/api/v1/user/reset-password', {
       email: validation.data.email,
     });
 

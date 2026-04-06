@@ -1,6 +1,8 @@
-import { AtSign, KeyRound, User } from 'lucide-react';
+import { AtSign, KeyRound, User, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Form, type SchemaField } from '../../../core/Form';
+import { Button } from '../../../core/Button/Button';
+import styles from '../auth.module.css';
 
 const registerSchema = [
   {
@@ -29,10 +31,10 @@ const registerSchema = [
   },
   {
     key: 'confirmPassword',
-    label: 'Confirmar Contraseña',
+    label: 'Confirmar contraseña',
     type: 'password',
     required: true,
-    placeholder: 'Confirmar contraseña',
+    placeholder: 'Repite tu contraseña',
     leftIcon: <KeyRound size={16} />,
   },
 ] as const satisfies SchemaField[];
@@ -41,16 +43,25 @@ const Register = () => {
   const navigate = useNavigate();
 
   return (
-    <div className='container' style={{ padding: '80px 20px', display: 'flex', justifyContent: 'center' }}>
-      <div className='card' style={{ width: '100%', maxWidth: '500px', padding: '40px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '30px', color: 'var(--primary-color)' }}>CREAR CUENTA</h2>
-        <Form
-          schema={registerSchema}
-          method='post'
-          submitLabel='Registrarse'
-          onCancel={() => void navigate('/auth/login')}
-          cancelLabel='Ya tengo cuenta'
-        />
+    <div className={styles.wrapper}>
+      <div className={`${styles.card} ${styles['card--wide']}`}>
+        <div className={styles.brand}>
+          <div className={styles.brand__icon}>
+            <UserPlus size={28} color='white' />
+          </div>
+          <h2 className={styles.brand__title}>Crear cuenta</h2>
+          <p className={styles.brand__subtitle}>Completa el formulario para unirte al club</p>
+        </div>
+
+        <Form schema={registerSchema} method='post' submitLabel='Registrarse' />
+
+        <div className={styles.divider}>o</div>
+
+        <div className={styles.links}>
+          <Button type='button' variant='ghost' size='sm' onClick={() => void navigate('/auth/login')}>
+            Ya tengo cuenta
+          </Button>
+        </div>
       </div>
     </div>
   );
