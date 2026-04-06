@@ -31,7 +31,7 @@ import AdminNews from '../components/pages/Admin/News';
 import AdminSiteEditor from '../components/pages/Admin/SiteEditor';
 import AdminLeagues from '../components/pages/Admin/Leagues';
 import AdminSeasons from '../components/pages/Admin/Seasons';
-import AdminMedia from '../components/pages/Admin/Media';
+// import AdminMedia from '../components/pages/Admin/Media';
 import AdminPlaceholder from '../components/pages/Admin/Placeholder';
 import MatchPlanning from '../components/pages/Admin/MatchPlanning';
 
@@ -138,10 +138,10 @@ const router = createBrowserRouter([
             path: 'patrocinadores',
             element: <AdminPlaceholder title='Gestión de Patrocinadores' />,
           },
-          {
-            path: 'media',
-            element: <AdminMedia />,
-          },
+          // {
+          //   path: 'media',
+          //   element: <AdminMedia />,
+          // },
           {
             path: 'site-editor',
             element: <AdminSiteEditor />,
