@@ -31,6 +31,7 @@ import AdminNews from '../components/pages/Admin/News';
 import AdminSiteEditor from '../components/pages/Admin/SiteEditor';
 import AdminLeagues from '../components/pages/Admin/Leagues';
 import AdminSeasons from '../components/pages/Admin/Seasons';
+import AdminMedia from '../components/pages/Admin/Media';
 import AdminPlaceholder from '../components/pages/Admin/Placeholder';
 import MatchPlanning from '../components/pages/Admin/MatchPlanning';
 
@@ -139,7 +140,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'media',
-            element: <AdminPlaceholder title='Galería de Media' />,
+            element: <AdminMedia />,
           },
           {
             path: 'site-editor',

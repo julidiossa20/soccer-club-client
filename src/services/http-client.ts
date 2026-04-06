@@ -13,16 +13,18 @@ export class HttpClient {
     const { error: errorToast, success: successToast } = this.#toast;
     const token = localStorage.getItem('token');
     try {
+      const isFormData = body instanceof FormData;
       const options: RequestInit = {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
           Authorization: `Bearer ${token}`,
         },
-        body: body ? JSON.stringify(body) : undefined,
+        body: isFormData ? body : body ? JSON.stringify(body) : undefined,
       };
 
-      const res = await fetch(`${API_BASE_URL}${endpoint}`, options);
+      const finalUrl = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+      const res = await fetch(finalUrl, options);
 
       let data: ApiResponse<T>;
       try {

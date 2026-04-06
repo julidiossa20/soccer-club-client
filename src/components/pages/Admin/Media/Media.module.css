@@ -1,0 +1,137 @@
+.container {
+  padding: var(--px40) var(--px20);
+}
+
+.header {
+  margin-bottom: var(--px40);
+}
+
+.header__title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.header__highlight {
+  color: var(--secondary-color);
+}
+
+.upload__zone {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px15);
+  align-items: center;
+  justify-content: center;
+  padding: var(--px40);
+  margin-bottom: var(--px50);
+  cursor: pointer;
+  background-color: var(--white);
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--px15);
+  transition: all 0.2s ease;
+}
+
+.upload__zone:hover {
+  background-color: var(--gray-50);
+  border-color: var(--secondary-color);
+}
+
+.upload__icon {
+  color: var(--gray-400);
+}
+
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--px20);
+}
+
+.card {
+  overflow: hidden;
+  background-color: var(--white);
+  border-radius: var(--px12);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(calc(var(--px5) * -1));
+}
+
+.preview__container {
+  position: relative;
+  width: 100%;
+  height: var(--px180);
+  background-color: var(--gray-100);
+}
+
+.preview__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview__badge {
+  position: absolute;
+  top: var(--px10);
+  right: var(--px10);
+  padding: var(--px4) var(--px8);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  background-color: var(--secondary-color);
+  border-radius: var(--px4);
+}
+
+.card__info {
+  padding: var(--px15);
+}
+
+.card__filename {
+  overflow: hidden;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--px5);
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+.card__actions {
+  display: flex;
+  gap: var(--px10);
+  margin-top: var(--px15);
+}
+
+.card__btn {
+  display: flex;
+  flex: 1;
+  gap: var(--px8);
+  align-items: center;
+  justify-content: center;
+  padding: var(--px8);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--px6);
+  transition: all 0.2s ease;
+}
+
+.card__btn:hover {
+  background-color: var(--gray-50);
+}
+
+.card__btn--delete:hover {
+  color: var(--error-color);
+  background-color: var(--gray-100);
+  border-color: var(--error-color);
+}
