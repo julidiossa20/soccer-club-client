@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 import Footer from '../../views/Footer';
 import Header from '../../views/Header';
-import { ToastContainer } from '../../views/Toast';
 import styles from './navigation.module.css';
 
 export default function Navigation({ children }: { children?: ReactNode }) {
@@ -15,7 +14,6 @@ export default function Navigation({ children }: { children?: ReactNode }) {
       <footer className={styles.navigation__footer}>
         <Footer />
       </footer>
-      <ToastContainer />
     </div>
   );
 }

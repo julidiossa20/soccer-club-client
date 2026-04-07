@@ -39,7 +39,12 @@ export class HttpClient {
         } as unknown as ApiResponse<T>;
       }
 
-      successToast(data.message);
+      if (!data.success) {
+        errorToast(data.message);
+      } else {
+        successToast(data.message);
+      }
+
       return data;
     } catch (error) {
       // Manejar errores de red o excepciones imprevistas
@@ -54,23 +59,23 @@ export class HttpClient {
     }
   }
 
-  static get<T>(endpoint: string) {
+  static get<T>(endpoint: `/api/v1${string}`) {
     return this.request<T>('GET', endpoint);
   }
 
-  static post<T>(endpoint: string, body?: unknown) {
+  static post<T>(endpoint: `/api/v1${string}`, body?: unknown) {
     return this.request<T>('POST', endpoint, body);
   }
 
-  static put<T>(endpoint: string, body?: unknown) {
+  static put<T>(endpoint: `/api/v1${string}`, body?: unknown) {
     return this.request<T>('PUT', endpoint, body);
   }
 
-  static patch<T>(endpoint: string, body?: unknown) {
+  static patch<T>(endpoint: `/api/v1${string}`, body?: unknown) {
     return this.request<T>('PATCH', endpoint, body);
   }
 
-  static delete<T>(endpoint: string) {
+  static delete<T>(endpoint: `/api/v1${string}`) {
     return this.request<T>('DELETE', endpoint);
   }
 }

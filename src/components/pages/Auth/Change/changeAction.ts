@@ -26,10 +26,15 @@ export async function changeAction({ request }: { request: Request }) {
   // usually need a token from query params or something
   const url = new URL(request.url);
   const token = url.searchParams.get('token');
+  if (token) {
+    console.log({ token });
+    localStorage.setItem('token', token);
+  }
 
   try {
     const response = await HttpClient.post('/api/v1/user/reset-password', {
       password: validation.data.password,
+      email: 'ricardo@gmail.com',
       token,
     });
 

@@ -10,7 +10,7 @@ interface ToastItemProps {
   duration?: number;
 }
 
-export const ToastItem = ({ id, message, type, duration = 3000 }: ToastItemProps) => {
+export const ToastItem = ({ id, message, type, duration = 6000 }: ToastItemProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
