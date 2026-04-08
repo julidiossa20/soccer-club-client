@@ -13,7 +13,6 @@ export async function loginAction({ request }: { request: Request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
-  // Zod Validation
   const validation = loginSchema.safeParse(data);
   if (!validation.success) {
     return {
@@ -31,14 +30,16 @@ export async function loginAction({ request }: { request: Request }) {
 
     if (!response.success) {
       return {
-        // En este punto, el mensaje viene directo del backend
-        errors: {
-          email: response.message || 'Credenciales incorrectas',
-        },
+        errors: response.errors.reduce(
+          (acc, { property, messages }) => {
+            acc[property] = messages;
+            return acc;
+          },
+          {} as Record<string, string | string[]>,
+        ),
       };
     }
 
-    // Success logic
     const { token, ...user } = response.data;
     localStorage.setItem('token', token);
     store.dispatch(loginSuccess({ user }));
