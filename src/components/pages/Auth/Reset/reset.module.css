@@ -1,0 +1,42 @@
+.reset {
+  /* pendiente */
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px4);
+  margin-top: var(--px16);
+}
+
+.divider {
+  display: flex;
+  gap: var(--px12);
+  align-items: center;
+  margin: var(--px20) 0 var(--px4);
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+
+.divider::before,
+.divider::after {
+  flex: 1;
+  height: var(--px1);
+  content: '';
+  background-color: var(--gray-200);
+}
+
+.info {
+  padding: var(--px14) var(--px16);
+  margin-bottom: var(--px24);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gray-600);
+  text-transform: none;
+  letter-spacing: 0;
+  background-color: var(--gray-50);
+  border-left: var(--px3) solid var(--secondary-color);
+  border-radius: var(--border-radius-sm);
+}
