@@ -2,6 +2,7 @@ import Auth from '../components/pages/Auth';
 import { authLoader } from '../components/pages/Auth/authLoader';
 import Change from '../components/pages/Auth/Change';
 import { changeAction } from '../components/pages/Auth/Change/changeAction';
+import { changeLoader } from '../components/pages/Auth/Change/changeLoader';
 import Login from '../components/pages/Auth/Login';
 import { loginAction } from '../components/pages/Auth/Login/loginAction';
 import Register from '../components/pages/Auth/Register';
@@ -26,6 +27,7 @@ export const auth = {
     },
     {
       path: 'change',
+      loader: changeLoader,
       action: changeAction,
       element: <Change />,
     },

@@ -23,36 +23,27 @@ export async function changeAction({ request }: { request: Request }) {
     };
   }
 
-  // usually need a token from query params or something
   const url = new URL(request.url);
   const token = url.searchParams.get('token');
-  if (token) {
-    console.log({ token });
-    localStorage.setItem('token', token);
-  }
+  if (!token) return;
 
-  try {
-    const response = await HttpClient.post('/api/v1/user/reset-password', {
+  const response = await HttpClient.request<Omit<Login.Data, 'token'>>({
+    method: 'PUT',
+    endpoint: '/api/v1/user/change-password',
+    body: {
       password: validation.data.password,
-      email: 'ricardo@gmail.com',
-      token,
-    });
+      confirmPassword: validation.data.confirm_password,
+    },
+    authtoken: token,
+  });
 
-    if (!response.success) {
-      return {
-        errors: {
-          password: response.message || 'Token inválido o expirado',
-        },
-      };
-    }
-
-    return redirect('/auth/login?changed=true');
-  } catch (error) {
-    console.error('Change password error:', error);
+  if (!response.success) {
     return {
       errors: {
-        password: 'Error inesperado',
+        password: response.message,
       },
     };
   }
+
+  return redirect('/auth/login?changed=true');
 }
