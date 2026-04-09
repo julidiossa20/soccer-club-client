@@ -1,3 +1,4 @@
+import { redirect } from 'react-router-dom';
 import { HttpClient } from '../../../services';
 import { store } from '../../../store';
 import { loginSuccess } from '../../../store/slices/authSlice';
@@ -14,5 +15,6 @@ export default async function loaderRoot() {
     return user;
   } else {
     localStorage.removeItem('token');
+    return redirect('/');
   }
 }

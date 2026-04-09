@@ -5,6 +5,7 @@ import { HttpClient } from '../../../../services';
 const registerSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   email: z.string().min(1, 'El email es requerido').email('Email inválido'),
+  phone: z.string().min(9, 'El teléfono debe tener al menos 9 caracteres'),
 });
 
 export async function registerAction({ request }: { request: Request }) {

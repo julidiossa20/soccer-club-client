@@ -1,9 +1,9 @@
-import { AtSign, User, UserPlus } from 'lucide-react';
+import { AtSign, Phone, User, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Form, type SchemaField } from '../../../core/Form';
 import { Button } from '../../../core/Button/Button';
-import styles from './register.module.css';
+import { Form, type SchemaField } from '../../../core/Form';
 import Icon from '../../../core/Icon';
+import styles from './register.module.css';
 
 const registerSchema = [
   {
@@ -21,6 +21,13 @@ const registerSchema = [
     required: true,
     placeholder: 'Correo electrónico',
     leftIcon: <AtSign size={16} />,
+  },
+  {
+    key: 'phone',
+    label: 'Teléfono',
+    type: 'tel',
+    placeholder: 'Número de teléfono',
+    leftIcon: <Phone size={16} />,
   },
 ] as const satisfies SchemaField[];
 
