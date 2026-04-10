@@ -21,6 +21,8 @@ const toErrorArray = (error?: string | string[]) => (Array.isArray(error) ? erro
 export const FormField = ({ field, value, error, onChange }: FormFieldProps) => {
   const colSpanClass = field.colSpan === 2 ? styles['col-span-2'] : undefined;
 
+  const isControlled = !!onChange;
+
   const handleChange = (val: FieldValue) => {
     onChange?.(field.key, val);
   };
@@ -39,8 +41,8 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
       <div className={colSpanClass}>
         <Checkbox
           {...commonProps}
-          checked={value !== undefined ? Boolean(value) : undefined}
-          defaultChecked={value === undefined ? false : undefined}
+          checked={isControlled && value !== undefined ? Boolean(value) : undefined}
+          defaultChecked={!isControlled && value !== undefined ? Boolean(value) : false}
           error={toSingleError(error)}
           onChange={(e) => handleChange(e.target.checked)}
         />
@@ -54,8 +56,10 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
         <Select
           {...commonProps}
           options={field.options}
-          value={value !== undefined ? String(value ?? '') : undefined}
-          defaultValue={value === undefined ? '' : undefined}
+          value={isControlled && value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={
+            !isControlled && value !== undefined ? String(value ?? '') : value === undefined ? '' : undefined
+          }
           error={toSingleError(error)}
           onChange={(e) => handleChange(e.target.value)}
         />
@@ -68,8 +72,10 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
       <div className={colSpanClass}>
         <Textarea
           {...commonProps}
-          value={value !== undefined ? String(value ?? '') : undefined}
-          defaultValue={value === undefined ? '' : undefined}
+          value={isControlled && value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={
+            !isControlled && value !== undefined ? String(value ?? '') : value === undefined ? '' : undefined
+          }
           rows={field.rows}
           error={toSingleError(error)}
           onChange={(e) => handleChange(e.target.value)}
@@ -84,8 +90,10 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
         <Input
           {...commonProps}
           type='number'
-          value={value !== undefined ? String(value ?? '') : undefined}
-          defaultValue={value === undefined ? '' : undefined}
+          value={isControlled && value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={
+            !isControlled && value !== undefined ? String(value ?? '') : value === undefined ? '' : undefined
+          }
           leftIcon={field.leftIcon}
           rightIcon={field.rightIcon}
           min={field.min}
@@ -104,8 +112,10 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
         <Input
           {...commonProps}
           type='date'
-          value={value !== undefined ? String(value ?? '') : undefined}
-          defaultValue={value === undefined ? '' : undefined}
+          value={isControlled && value !== undefined ? String(value ?? '') : undefined}
+          defaultValue={
+            !isControlled && value !== undefined ? String(value ?? '') : value === undefined ? '' : undefined
+          }
           leftIcon={field.leftIcon}
           rightIcon={field.rightIcon}
           min={field.min}
@@ -123,8 +133,8 @@ export const FormField = ({ field, value, error, onChange }: FormFieldProps) => 
       <Input
         {...commonProps}
         type={field.type}
-        value={value !== undefined ? String(value ?? '') : undefined}
-        defaultValue={value === undefined ? '' : undefined}
+        value={isControlled && value !== undefined ? String(value ?? '') : undefined}
+        defaultValue={!isControlled && value !== undefined ? String(value ?? '') : value === undefined ? '' : undefined}
         leftIcon={field.leftIcon}
         rightIcon={field.rightIcon}
         error={toErrorArray(error)}

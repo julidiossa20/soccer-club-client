@@ -14,6 +14,8 @@ namespace Login {
     avatar: string | null;
     token: string;
     role: 'admin' | 'user' | 'guest';
+    createdAt: string;
+    updatedAt: string;
   }
 
   interface TBody {

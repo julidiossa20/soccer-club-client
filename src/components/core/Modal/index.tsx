@@ -22,10 +22,13 @@ export const Modal = ({ isOpen, onClose, title, children, size = 'md' }: ModalPr
   if (!isOpen) return null;
 
   return (
-    <div className={styles.modal__overlay} onClick={onClose}>
+    <div role='button' tabIndex={0} className={styles.modal__overlay} onClick={onClose} onKeyUp={onClose}>
       <div
+        role='button'
+        tabIndex={0}
         className={styles.modal__content + (size === 'lg' ? ' ' + styles['modal__content--lg'] : '')}
-        onClick={(e) => e.stopPropagation()}>
+        onClick={(e) => e.stopPropagation()}
+        onKeyUp={onClose}>
         <header className={styles.modal__header}>
           <h3>{title}</h3>
           <button className={styles.modal__close} onClick={onClose}>
