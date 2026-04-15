@@ -1,11 +1,11 @@
 .modal__overlay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(0 0 0 / 0.4);
   backdrop-filter: blur(4px);
 }
 
@@ -28,12 +28,13 @@
 
 @keyframes modal-in {
   from {
-    transform: scale(0.95);
     opacity: 0;
+    transform: scale(0.95);
   }
+
   to {
-    transform: scale(1);
     opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -47,8 +48,8 @@
 
 .modal__header h3 {
   margin: 0;
-  color: var(--gray-800);
   font-size: 1.15rem;
+  color: var(--gray-800);
 }
 
 .modal__close {
@@ -56,17 +57,17 @@
   align-items: center;
   justify-content: center;
   padding: var(--px5);
+  color: var(--gray-500);
+  cursor: pointer;
   background: transparent;
   border: none;
   border-radius: var(--border-radius-sm);
-  color: var(--gray-500);
-  cursor: pointer;
   transition: all 0.2s;
 }
 
 .modal__close:hover {
-  background-color: var(--gray-100);
   color: var(--error-color);
+  background-color: var(--gray-100);
 }
 
 .modal__body {

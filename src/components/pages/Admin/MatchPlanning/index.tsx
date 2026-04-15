@@ -98,7 +98,7 @@ const MOCK_PLAYERS = [
 ];
 
 export default function MatchPlanning() {
-  const actionData = (useActionData() as { success?: boolean; message?: string }) || {};
+  const actionData = useActionData()! || {};
 
   return (
     <div className={styles.container}>
@@ -123,9 +123,7 @@ export default function MatchPlanning() {
               method='post'
               style={{ marginTop: 'var(--px20)', display: 'flex', flexDirection: 'column', gap: 'var(--px15)' }}>
               <div>
-                <label
-                  htmlFor='opponent'
-                  style={{ display: 'block', fontSize: '0.9rem', marginBottom: 'var(--px5)' }}>
+                <label htmlFor='opponent' style={{ display: 'block', fontSize: '0.9rem', marginBottom: 'var(--px5)' }}>
                   RIVAL
                 </label>
                 <input
@@ -142,9 +140,7 @@ export default function MatchPlanning() {
                 />
               </div>
               <div>
-                <label
-                  htmlFor='date'
-                  style={{ display: 'block', fontSize: '0.9rem', marginBottom: 'var(--px5)' }}>
+                <label htmlFor='date' style={{ display: 'block', fontSize: '0.9rem', marginBottom: 'var(--px5)' }}>
                   FECHA
                 </label>
                 <input
@@ -170,7 +166,9 @@ export default function MatchPlanning() {
 
           <div className='card' style={{ padding: 'var(--px30)' }}>
             <h3>EQUIPO TÉCNICO</h3>
-            <p style={{ color: 'var(--gray-600)', marginTop: 'var(--px10)' }}>Asigna los roles del staff para este partido.</p>
+            <p style={{ color: 'var(--gray-600)', marginTop: 'var(--px10)' }}>
+              Asigna los roles del staff para este partido.
+            </p>
           </div>
         </aside>
       </div>

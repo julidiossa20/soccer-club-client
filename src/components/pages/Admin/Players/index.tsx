@@ -1,18 +1,12 @@
 import { UserCircle, Edit, Trash, Eye, User, Trophy, Hash, ImageIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
 import { MediaPickerModal } from '../../../core/MediaPickerModal';
-
-interface PlayerData {
-  id: number;
-  name: string;
-  pos: 'DEL' | 'MED' | 'DEF' | 'POR';
-  team: string;
-  age: number;
-  photo?: string;
-}
+import type { IPlayer } from '../../../../services';
+// import { IPlayer } from '../../../../services/adminServices';
 
 const playerFormSchema = [
   {
@@ -24,7 +18,7 @@ const playerFormSchema = [
     leftIcon: <User size={16} />,
   },
   {
-    key: 'pos',
+    key: 'position',
     label: 'Posición',
     type: 'select',
     required: true,
@@ -37,11 +31,11 @@ const playerFormSchema = [
     ],
   },
   {
-    key: 'team',
-    label: 'Equipo actual',
-    type: 'text',
+    key: 'number',
+    label: 'Dorsal',
+    type: 'number',
     required: true,
-    placeholder: 'Nombre del equipo',
+    placeholder: '10',
     leftIcon: <Hash size={16} />,
   },
   {
@@ -55,62 +49,51 @@ const playerFormSchema = [
 ] as const satisfies SchemaField[];
 
 export default function AdminPlayers() {
-  const [players, setPlayers] = useState<PlayerData[]>([
-    { id: 1, name: 'Lamine Yamal', pos: 'DEL', team: 'FC Barcelona', age: 17 },
-    { id: 2, name: 'Vinícius Jr.', pos: 'DEL', team: 'Real Madrid', age: 24 },
-  ]);
+  const players = useLoaderData();
+  const actionData = useActionData();
+  const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMediaOpen, setIsMediaOpen] = useState(false);
-  const [currentPlayer, setCurrentPlayer] = useState<Partial<PlayerData> | null>(null);
+  const [currentPlayer, setCurrentPlayer] = useState<Partial<IPlayer> | null>(null);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      setIsModalOpen(false);
+      setCurrentPlayer(null);
+    }
+  }, [actionData]);
 
   const handleOpenAdd = () => {
     setCurrentPlayer(null);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (player: PlayerData) => {
+  const handleOpenEdit = (player: IPlayer) => {
     setCurrentPlayer(player);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (player: PlayerData) => {
+  const handleDelete = (player: IPlayer) => {
     if (window.confirm(`¿Liberar al jugador ${player.name}?`)) {
-      setPlayers(players.filter((p) => p.id !== player.id));
+      submit({ id: String(player.id), intent: 'delete' }, { method: 'post' });
     }
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
+    if (currentPlayer?.id) formData.append('id', String(currentPlayer.id));
+    formData.append('intent', currentPlayer?.id ? 'update' : 'create');
+    formData.append('photo', currentPlayer?.photo || '');
 
-    if (currentPlayer?.id) {
-      setPlayers(
-        players.map((p) =>
-          p.id === currentPlayer.id
-            ? ({ ...p, ...data, age: Number(data.age), photo: currentPlayer.photo } as PlayerData)
-            : p,
-        ),
-      );
-    } else {
-      const newPlayer: PlayerData = {
-        id: Math.max(...players.map((p) => p.id)) + 1,
-        name: data.name as string,
-        pos: data.pos as PlayerData['pos'],
-        team: data.team as string,
-        age: Number(data.age),
-        photo: currentPlayer?.photo,
-      };
-      setPlayers([...players, newPlayer]);
-    }
-    setIsModalOpen(false);
+    submit(formData, { method: 'post' });
   };
 
   const columns = [
     { key: 'name', label: 'Nombre' },
     {
-      key: 'pos',
+      key: 'position',
       label: 'Posición',
       render: (val: string) => (
         <span
@@ -126,12 +109,12 @@ export default function AdminPlayers() {
         </span>
       ),
     },
-    { key: 'team', label: 'Equipo' },
+    { key: 'number', label: 'Dorsal' },
     { key: 'age', label: 'Edad' },
   ];
 
   const actions = [
-    { label: 'Ficha', icon: <Eye size={16} />, onClick: (p: PlayerData) => console.log('View', p) },
+    { label: 'Ficha', icon: <Eye size={16} />, onClick: (p: IPlayer) => console.log('View', p) },
     { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
     { label: 'Borrar', icon: <Trash size={16} />, variant: 'danger' as const, onClick: handleDelete },
   ];
@@ -152,13 +135,12 @@ export default function AdminPlayers() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={currentPlayer ? 'Editar Ficha Jugador' : 'Nuevo Registro de Jugador'}>
-        {/* Foto del jugador */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--px16)', marginBottom: 'var(--px20)' }}>
           {currentPlayer?.photo ? (
             <img
               src={currentPlayer.photo}
               alt='foto jugador'
-              style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gray-200)' }}
+              style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover' }}
             />
           ) : (
             <div
@@ -174,31 +156,17 @@ export default function AdminPlayers() {
               <UserCircle size={32} color='var(--gray-400)' />
             </div>
           )}
-          <button
-            type='button'
-            onClick={() => setIsMediaOpen(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: 'var(--px8) var(--px14)',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              background: 'none',
-              border: '1px solid var(--gray-300)',
-              borderRadius: 'var(--border-radius-sm)',
-            }}>
-            <ImageIcon size={14} />
-            {currentPlayer?.photo ? 'Cambiar foto' : 'Seleccionar foto'}
+          <button type='button' onClick={() => setIsMediaOpen(true)} style={{ padding: '8px', cursor: 'pointer' }}>
+            <ImageIcon size={14} /> {currentPlayer?.photo ? 'Cambiar' : 'Subir'}
           </button>
         </div>
         <Form
           schema={playerFormSchema}
           values={currentPlayer ?? {}}
           onSubmit={handleSave}
-          submitLabel={currentPlayer ? 'Actualizar Ficha' : 'Registrar Jugador'}
+          submitLabel={currentPlayer ? 'Actualizar' : 'Registrar'}
           onCancel={() => setIsModalOpen(false)}
+          errors={actionData?.errors}
         />
       </Modal>
 

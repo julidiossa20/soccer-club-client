@@ -14,11 +14,11 @@
 
 .grid__title {
   display: flex;
-  align-items: center;
   gap: var(--px10);
+  align-items: center;
   margin: 0;
-  color: var(--gray-800);
   font-size: 1.5rem;
+  color: var(--gray-800);
   letter-spacing: normal;
 }
 
@@ -31,8 +31,8 @@
 
 .grid__table {
   width: 100%;
-  border-collapse: collapse;
   text-align: left;
+  border-collapse: collapse;
 }
 
 .grid__table thead {
@@ -42,9 +42,9 @@
 
 .grid__table th {
   padding: var(--px15) var(--px20);
-  color: var(--gray-600);
   font-size: 0.75rem;
   font-weight: 700;
+  color: var(--gray-600);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -65,9 +65,9 @@
 
 .grid__table td {
   padding: var(--px15) var(--px20);
-  color: var(--gray-700);
   font-size: 0.95rem;
   vertical-align: middle;
+  color: var(--gray-700);
 }
 
 .grid__actions-header {
@@ -80,9 +80,9 @@
 
 .grid__actions {
   display: flex;
+  gap: var(--px5);
   align-items: center;
   justify-content: flex-end;
-  gap: var(--px5);
 }
 
 .grid__footer {
@@ -99,8 +99,8 @@
 
 .grid__pagination {
   display: flex;
-  align-items: center;
   gap: var(--px15);
+  align-items: center;
 }
 
 .grid__page {
@@ -109,7 +109,7 @@
 }
 
 /* Response Design: Stack Table on Mobile */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .grid__table thead {
     display: none;
   }
@@ -126,8 +126,8 @@
     display: flex;
     justify-content: space-between;
     padding: var(--px10) var(--px15);
-    border-bottom: 1px solid var(--gray-50);
     text-align: right;
+    border-bottom: 1px solid var(--gray-50);
   }
 
   .grid__table td:last-child {
@@ -135,12 +135,12 @@
   }
 
   .grid__table td::before {
-    content: attr(data-label);
-    color: var(--gray-500);
-    font-weight: 700;
     font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--gray-500);
     text-align: left;
     text-transform: uppercase;
+    content: attr(data-label);
   }
 
   .grid__actions-cell {

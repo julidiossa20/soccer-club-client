@@ -15,8 +15,8 @@
   height: 80vh;
   min-height: 37.5rem;
   overflow: hidden;
-  background-color: var(--primary-color);
   color: var(--text-color-white);
+  background-color: var(--primary-color);
 }
 
 .hero__image-container {
@@ -36,7 +36,7 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 100%);
+  background: linear-gradient(0deg, rgb(0 0 0 / 0.8) 0%, rgb(0 0 0 / 0.2) 100%);
 }
 
 .hero__content {
@@ -52,12 +52,12 @@
   display: inline-block;
   padding: var(--px5) var(--px15);
   margin-bottom: var(--px20);
-  background: var(--secondary-color);
-  border-radius: var(--border-radius-sm);
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-sm);
 }
 
 .hero__title {
@@ -88,8 +88,8 @@
   z-index: 10;
   width: 100%;
   max-width: 62.5rem;
-  margin: -5rem auto var(--px80);
   padding: var(--px40);
+  margin: -5rem auto var(--px80);
   background: var(--bg-color);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
@@ -111,15 +111,15 @@
 .nextMatch__teams {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items: center;
   gap: var(--px40);
+  align-items: center;
 }
 
 .nextMatch__team {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: var(--px15);
+  align-items: center;
 }
 
 .nextMatch__logo {
@@ -136,16 +136,16 @@
 
 .nextMatch__vs {
   font-size: 2.5rem;
+  font-style: italic;
   font-weight: 900;
   color: var(--gray-200);
-  font-style: italic;
 }
 
 .nextMatch__info {
-  margin-top: var(--px35);
   padding-top: var(--px20);
-  border-top: 1px solid var(--gray-100);
+  margin-top: var(--px35);
   text-align: center;
+  border-top: 1px solid var(--gray-100);
 }
 
 .nextMatch__details {
@@ -159,8 +159,8 @@
 
 .nextMatch__detail {
   display: flex;
-  align-items: center;
   gap: var(--px8);
+  align-items: center;
 }
 
 /* ─── News Section ──────────────────────────── */
@@ -168,8 +168,8 @@
 .section {
   width: 100%;
   max-width: 75rem;
-  margin: 0 auto var(--px80);
   padding: 0 var(--px20);
+  margin: 0 auto var(--px80);
 }
 
 .section__header {
@@ -181,17 +181,17 @@
 
 .section__title {
   position: relative;
-  font-size: 2rem;
   padding-left: var(--px15);
+  font-size: 2rem;
 }
 
 .section__title::before {
-  content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   width: 4px;
+  content: '';
   background: var(--secondary-color);
 }
 
@@ -203,16 +203,18 @@
 
 .newsCard {
   overflow: hidden;
+  cursor: pointer;
   background: var(--bg-color);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .newsCard:hover {
-  transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
+  transform: translateY(-8px);
 }
 
 .newsCard__image {
@@ -240,11 +242,11 @@
 
 .newsCard__excerpt {
   font-size: 0.9rem;
-  color: var(--gray-600);
   line-height: 1.6;
+  color: var(--gray-600);
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .nextMatch {
     padding: var(--px20);
     margin-top: -3rem;

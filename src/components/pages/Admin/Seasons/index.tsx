@@ -1,17 +1,9 @@
 import { Calendar, Edit, Trash } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
-
-interface SeasonData {
-  id: number;
-  year: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  status: 'active' | 'upcoming' | 'finished';
-}
 
 const seasonFormSchema = [
   {
@@ -55,43 +47,43 @@ const seasonFormSchema = [
 ] as const satisfies SchemaField[];
 
 export default function AdminSeasons() {
-  const [seasons, setSeasons] = useState<SeasonData[]>([
-    { id: 1, year: '2025', name: 'Apertura 2025', startDate: '2025-01-20', endDate: '2025-06-15', status: 'active' },
-    { id: 2, year: '2025', name: 'Clausura 2025', startDate: '2025-07-20', endDate: '2025-12-15', status: 'upcoming' },
-  ]);
+  const seasons = useLoaderData();
+  const actionData = useActionData();
+  const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentSeason, setCurrentSeason] = useState<Partial<SeasonData> | null>(null);
+  const [currentSeason, setCurrentSeason] = useState<Partial<any> | null>(null);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      setIsModalOpen(false);
+      setCurrentSeason(null);
+    }
+  }, [actionData]);
 
   const handleOpenAdd = () => {
     setCurrentSeason(null);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (season: SeasonData) => {
+  const handleOpenEdit = (season: any) => {
     setCurrentSeason(season);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = (season: any) => {
+    if (window.confirm(`¿Eliminar la temporada ${season.name}?`)) {
+      submit({ id: String(season.id), intent: 'delete' }, { method: 'post' });
+    }
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
+    if (currentSeason?.id) formData.append('id', String(currentSeason.id));
+    formData.append('intent', currentSeason?.id ? 'update' : 'create');
 
-    if (currentSeason?.id) {
-      setSeasons(seasons.map((s) => (s.id === currentSeason.id ? ({ ...s, ...data } as SeasonData) : s)));
-    } else {
-      const newSeason: SeasonData = {
-        id: Math.max(...seasons.map((s) => s.id)) + 1,
-        name: data.name as string,
-        year: data.year as string,
-        startDate: data.startDate as string,
-        endDate: data.endDate as string,
-        status: data.status as any,
-      };
-      setSeasons([...seasons, newSeason]);
-    }
-    setIsModalOpen(false);
+    submit(formData, { method: 'post' });
   };
 
   const columns = [
@@ -114,7 +106,7 @@ export default function AdminSeasons() {
             fontSize: '0.8rem',
             fontWeight: 600,
           }}>
-          {val.toUpperCase()}
+          {val?.toUpperCase()}
         </span>
       ),
     },
@@ -122,16 +114,7 @@ export default function AdminSeasons() {
 
   const actions = [
     { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
-    {
-      label: 'Borrar',
-      icon: <Trash size={16} />,
-      variant: 'danger' as const,
-      onClick: (s: SeasonData) => {
-        if (window.confirm(`¿Eliminar la temporada ${s.name}?`)) {
-          setSeasons(seasons.filter((item) => item.id !== s.id));
-        }
-      },
-    },
+    { label: 'Borrar', icon: <Trash size={16} />, variant: 'danger' as const, onClick: handleDelete },
   ];
 
   return (
@@ -156,6 +139,7 @@ export default function AdminSeasons() {
           onSubmit={handleSave}
           submitLabel={currentSeason ? 'Guardar Cambios' : 'Crear Temporada'}
           onCancel={() => setIsModalOpen(false)}
+          errors={actionData?.errors}
         />
       </Modal>
     </div>

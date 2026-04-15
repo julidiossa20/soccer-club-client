@@ -1,16 +1,11 @@
 import { Trophy, Edit, Trash, MapPin, User, Hash } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
-
-interface TeamData {
-  id: number;
-  name: string;
-  city: string;
-  manager: string;
-  points: number;
-}
+import type { ITeam } from '../../../../services';
+// import { ITeam } from '../../../../services/adminServices';
 
 const teamFormSchema = [
   {
@@ -48,50 +43,43 @@ const teamFormSchema = [
 ] as const satisfies SchemaField[];
 
 export default function AdminTeams() {
-  const [teams, setTeams] = useState<TeamData[]>([
-    { id: 1, name: 'FC Barcelona', city: 'Barcelona', manager: 'Xavi', points: 45 },
-    { id: 2, name: 'Real Madrid', city: 'Madrid', manager: 'Ancelotti', points: 42 },
-  ]);
+  const teams = useLoaderData();
+  const actionData = useActionData();
+  const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentTeam, setCurrentTeam] = useState<Partial<TeamData> | null>(null);
+  const [currentTeam, setCurrentTeam] = useState<Partial<ITeam> | null>(null);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      setIsModalOpen(false);
+      setCurrentTeam(null);
+    }
+  }, [actionData]);
 
   const handleOpenAdd = () => {
     setCurrentTeam(null);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (team: TeamData) => {
+  const handleOpenEdit = (team: ITeam) => {
     setCurrentTeam(team);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (team: TeamData) => {
+  const handleDelete = (team: ITeam) => {
     if (window.confirm(`¿Eliminar al equipo ${team.name}?`)) {
-      setTeams(teams.filter((t) => t.id !== team.id));
+      submit({ id: String(team.id), intent: 'delete' }, { method: 'post' });
     }
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
+    if (currentTeam?.id) formData.append('id', String(currentTeam.id));
+    formData.append('intent', currentTeam?.id ? 'update' : 'create');
 
-    if (currentTeam?.id) {
-      setTeams(
-        teams.map((t) => (t.id === currentTeam.id ? ({ ...t, ...data, points: Number(data.points) } as TeamData) : t)),
-      );
-    } else {
-      const newTeam: TeamData = {
-        id: Math.max(...teams.map((t) => t.id)) + 1,
-        name: data.name as string,
-        city: data.city as string,
-        manager: data.manager as string,
-        points: Number(data.points),
-      };
-      setTeams([...teams, newTeam]);
-    }
-    setIsModalOpen(false);
+    submit(formData, { method: 'post' });
   };
 
   const columns = [
@@ -128,6 +116,7 @@ export default function AdminTeams() {
           onSubmit={handleSave}
           submitLabel={currentTeam ? 'Guardar Cambios' : 'Crear Equipo'}
           onCancel={() => setIsModalOpen(false)}
+          errors={actionData?.errors}
         />
       </Modal>
     </div>

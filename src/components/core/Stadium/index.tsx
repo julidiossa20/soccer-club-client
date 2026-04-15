@@ -35,8 +35,7 @@ export const Stadium = ({ players, title }: StadiumProps) => {
               left: `${player.x}%`,
               top: `${player.y}%`,
               transform: 'translate(-50%, -50%)',
-            }}
-          >
+            }}>
             <img src={player.photo} alt={player.name} className={styles['stadium__player-photo']} />
             <span className={styles['stadium__player-name']}>{player.name}</span>
           </div>

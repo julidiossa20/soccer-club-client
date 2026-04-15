@@ -1,41 +1,44 @@
 import { Newspaper, Edit, Trash, Eye } from 'lucide-react';
+import { useLoaderData, useSubmit } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
-
-interface NewsData {
-  id: number;
-  title: string;
-  date: string;
-  author: string;
-}
+import type { INews } from '../../../../services';
 
 export default function AdminNews() {
-  const news: NewsData[] = [
-    { id: 1, title: 'Nuevo fichaje estrella', date: '2025-04-01', author: 'Admin' },
-    { id: 2, title: 'Resultados de la jornada', date: '2025-04-03', author: 'Editor' },
-  ];
+  const news = useLoaderData();
+  const submit = useSubmit();
 
   const columns = [
     { key: 'title', label: 'Título' },
-    { key: 'date', label: 'Fecha' },
-    { key: 'author', label: 'Autor' },
+    {
+      key: 'publishedAt',
+      label: 'Publicado',
+      render: (val: string) => (val ? new Date(val).toLocaleDateString() : 'Borrador'),
+    },
+    { key: 'authorName', label: 'Autor' },
   ];
+
+  const handleDelete = (n: INews) => {
+    if (window.confirm(`¿Eliminar la noticia ${n.title}?`)) {
+      submit({ id: String(n.id), intent: 'delete' }, { method: 'post' });
+    }
+  };
 
   const actions = [
     {
       label: 'Previsualizar',
       icon: <Eye size={16} />,
-      onClick: (n: NewsData) => console.log('Preview', n),
+      onClick: (n: INews) => window.open(`/noticia/${n.id}`, '_blank'),
     },
     {
       label: 'Editar',
       icon: <Edit size={16} />,
-      onClick: (n: NewsData) => console.log('Edit', n),
+      onClick: (n: INews) => (window.location.hash = `/admin/noticias/editar/${n.id}`),
     },
     {
       label: 'Borrar',
       icon: <Trash size={16} />,
       variant: 'danger' as const,
-      onClick: (n: NewsData) => console.log('Delete', n),
+      onClick: handleDelete,
     },
   ];
 
@@ -45,7 +48,7 @@ export default function AdminNews() {
       title='Gestión de Noticias'
       data={news}
       columns={columns}
-      onAdd={() => undefined}
+      onAdd={() => (window.location.hash = '/admin/noticias/nuevo')}
       addLabel='Redactar Noticia'
       actions={actions}
     />

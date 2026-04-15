@@ -20,8 +20,8 @@
 
 .content {
   display: grid;
-  gap: var(--px30);
   grid-template-columns: 1fr 350px;
+  gap: var(--px30);
 }
 
 .sidebar {

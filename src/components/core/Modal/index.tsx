@@ -12,23 +12,28 @@ interface ModalProps {
 
 export const Modal = ({ isOpen, onClose, title, children, size = 'md' }: ModalProps) => {
   useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleEscape);
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [isOpen]);
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div role='button' tabIndex={0} className={styles.modal__overlay} onClick={onClose} onKeyUp={onClose}>
+    <div className={styles.modal__overlay} onClick={onClose}>
       <div
-        role='button'
-        tabIndex={0}
         className={styles.modal__content + (size === 'lg' ? ' ' + styles['modal__content--lg'] : '')}
-        onClick={(e) => e.stopPropagation()}
-        onKeyUp={onClose}>
+        onClick={(e) => e.stopPropagation()}>
         <header className={styles.modal__header}>
           <h3>{title}</h3>
           <button className={styles.modal__close} onClick={onClose}>

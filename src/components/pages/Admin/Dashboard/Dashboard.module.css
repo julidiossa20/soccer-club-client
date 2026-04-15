@@ -5,9 +5,9 @@
 }
 
 .dashboard__title {
-  color: var(--gray-800);
   font-size: 1.8rem;
   font-weight: 700;
+  color: var(--gray-800);
 }
 
 .dashboard__stats {
@@ -37,17 +37,17 @@
 }
 
 .dashboard__count {
-  color: var(--primary-color);
   font-size: 2rem;
   font-weight: 800;
   line-height: 1;
+  color: var(--primary-color);
 }
 
 .dashboard__card-title {
   margin-top: var(--px5);
-  color: var(--gray-600);
   font-size: 0.9rem;
   font-weight: 600;
+  color: var(--gray-600);
 }
 
 .dashboard__icon-wrapper {
@@ -69,8 +69,8 @@
 .recent-activity h3 {
   padding-bottom: var(--px10);
   margin-bottom: var(--px20);
-  border-bottom: 1px solid var(--gray-200);
   font-size: 1.1rem;
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .recent-activity__list {
@@ -92,8 +92,8 @@
 }
 
 .recent-activity__item span {
-  color: var(--gray-800);
   font-size: 0.95rem;
+  color: var(--gray-800);
 }
 
 .recent-activity__item small {

@@ -1,16 +1,11 @@
 import { Edit, Trash, AtSign, UserCircle, ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
-
-interface UserData {
-  id: number;
-  name: string;
-  email: string;
-  role: 'admin' | 'editor' | 'user';
-  joined: string;
-}
+import type { IUser } from '../../../../services';
+// import { IUser } from '../../../../services/adminServices';
 
 const userFormSchema = [
   {
@@ -44,51 +39,43 @@ const userFormSchema = [
 ] as const satisfies SchemaField[];
 
 export default function AdminUsers() {
-  const [users, setUsers] = useState<UserData[]>([
-    { id: 1, name: 'Admin Juan', email: 'admin@club.com', role: 'admin', joined: '2025-01-01' },
-    { id: 2, name: 'Pibe Valderrama', email: 'pibe@club.com', role: 'editor', joined: '2025-02-15' },
-    { id: 3, name: 'René Higuita', email: 'rene@club.com', role: 'user', joined: '2025-03-20' },
-  ]);
+  const users = useLoaderData();
+  const actionData = useActionData();
+  const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<Partial<UserData> | null>(null);
+  const [currentUser, setCurrentUser] = useState<Partial<IUser> | null>(null);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      setIsModalOpen(false);
+      setCurrentUser(null);
+    }
+  }, [actionData]);
 
   const handleOpenAdd = () => {
     setCurrentUser(null);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (user: UserData) => {
+  const handleOpenEdit = (user: IUser) => {
     setCurrentUser(user);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (user: UserData) => {
+  const handleDelete = (user: IUser) => {
     if (window.confirm(`¿Estás seguro de eliminar a ${user.name}?`)) {
-      setUsers(users.filter((u) => u.id !== user.id));
+      submit({ id: String(user.id), intent: 'delete' }, { method: 'post' });
     }
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
+    if (currentUser?.id) formData.append('id', String(currentUser.id));
+    formData.append('intent', currentUser?.id ? 'update' : 'create');
 
-    if (currentUser?.id) {
-      // Edit
-      setUsers(users.map((u) => (u.id === currentUser.id ? ({ ...u, ...data } as UserData) : u)));
-    } else {
-      // Add
-      const newUser: UserData = {
-        id: Math.max(...users.map((u) => u.id)) + 1,
-        name: data.name as string,
-        email: data.email as string,
-        role: data.role as 'admin' | 'editor' | 'user',
-        joined: new Date().toISOString().split('T')[0],
-      };
-      setUsers([...users, newUser]);
-    }
-    setIsModalOpen(false);
+    submit(formData, { method: 'post' });
   };
 
   const columns = [
@@ -109,25 +96,15 @@ export default function AdminUsers() {
             color:
               val === 'admin' ? 'var(--error-color)' : val === 'editor' ? 'var(--success-color)' : 'var(--gray-700)',
           }}>
-          {val.toUpperCase()}
+          {val?.toUpperCase()}
         </span>
       ),
     },
-    { key: 'joined', label: 'Unión' },
   ];
 
   const actions = [
-    {
-      label: 'Editar',
-      icon: <Edit size={16} />,
-      onClick: handleOpenEdit,
-    },
-    {
-      label: 'Borrar',
-      icon: <Trash size={16} />,
-      variant: 'danger' as const,
-      onClick: handleDelete,
-    },
+    { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
+    { label: 'Borrar', icon: <Trash size={16} />, variant: 'danger' as const, onClick: handleDelete },
   ];
 
   return (
@@ -152,6 +129,7 @@ export default function AdminUsers() {
           onSubmit={handleSave}
           submitLabel={currentUser ? 'Guardar Cambios' : 'Crear Usuario'}
           onCancel={() => setIsModalOpen(false)}
+          errors={actionData?.errors}
         />
       </Modal>
     </div>

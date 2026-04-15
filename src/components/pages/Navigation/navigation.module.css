@@ -18,8 +18,8 @@
 .navigation__footer {
   width: 100%;
   padding: var(--px80) var(--px20);
-  background: var(--primary-color);
   color: white;
   text-align: center;
+  background: var(--primary-color);
   border-top: 1px solid rgb(255 255 255 / 0.1);
 }

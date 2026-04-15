@@ -1,17 +1,11 @@
 import { Briefcase, Edit, Trash, ExternalLink, Hash } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
-
-interface SponsorData {
-  id: number;
-  name: string;
-  category: string;
-  website: string;
-  contractValue: number;
-  status: 'active' | 'expired';
-}
+import type { ISponsor } from '../../../../services';
+// import { ISponsor } from '../../../../services/adminServices';
 
 const sponsorFormSchema = [
   {
@@ -51,63 +45,43 @@ const sponsorFormSchema = [
 ] as const satisfies SchemaField[];
 
 export default function AdminSponsors() {
-  const [sponsors, setSponsors] = useState<SponsorData[]>([
-    {
-      id: 1,
-      name: 'Adidas',
-      category: 'Technical',
-      website: 'https://adidas.com',
-      contractValue: 500000,
-      status: 'active',
-    },
-    {
-      id: 2,
-      name: 'Emirates',
-      category: 'Main',
-      website: 'https://emirates.com',
-      contractValue: 2000000,
-      status: 'active',
-    },
-  ]);
+  const sponsors = useLoaderData();
+  const actionData = useActionData();
+  const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentSponsor, setCurrentSponsor] = useState<Partial<SponsorData> | null>(null);
+  const [currentSponsor, setCurrentSponsor] = useState<Partial<ISponsor> | null>(null);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      setIsModalOpen(false);
+      setCurrentSponsor(null);
+    }
+  }, [actionData]);
 
   const handleOpenAdd = () => {
     setCurrentSponsor(null);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (sponsor: SponsorData) => {
+  const handleOpenEdit = (sponsor: ISponsor) => {
     setCurrentSponsor(sponsor);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = (sponsor: ISponsor) => {
+    if (window.confirm(`¿Eliminar patrocinio de ${sponsor.name}?`)) {
+      submit({ id: String(sponsor.id), intent: 'delete' }, { method: 'post' });
+    }
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
+    if (currentSponsor?.id) formData.append('id', String(currentSponsor.id));
+    formData.append('intent', currentSponsor?.id ? 'update' : 'create');
 
-    if (currentSponsor?.id) {
-      setSponsors(
-        sponsors.map((s) =>
-          s.id === currentSponsor.id
-            ? ({ ...s, ...data, contractValue: Number(data.contractValue) } as SponsorData)
-            : s,
-        ),
-      );
-    } else {
-      const newSponsor: SponsorData = {
-        id: Math.max(...sponsors.map((s) => s.id)) + 1,
-        name: data.name as string,
-        category: data.category as string,
-        website: data.website as string,
-        contractValue: Number(data.contractValue),
-        status: 'active',
-      };
-      setSponsors([...sponsors, newSponsor]);
-    }
-    setIsModalOpen(false);
+    submit(formData, { method: 'post' });
   };
 
   const columns = [
@@ -116,7 +90,7 @@ export default function AdminSponsors() {
     {
       key: 'contractValue',
       label: 'Valor',
-      render: (val: number) => `$${val.toLocaleString()}`,
+      render: (val: number) => `$${Number(val).toLocaleString()}`,
     },
     {
       key: 'status',
@@ -131,7 +105,7 @@ export default function AdminSponsors() {
             fontSize: '0.8rem',
             fontWeight: 600,
           }}>
-          {val.toUpperCase()}
+          {val?.toUpperCase()}
         </span>
       ),
     },
@@ -139,16 +113,7 @@ export default function AdminSponsors() {
 
   const actions = [
     { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
-    {
-      label: 'Borrar',
-      icon: <Trash size={16} />,
-      variant: 'danger' as const,
-      onClick: (s: SponsorData) => {
-        if (window.confirm(`¿Eliminar patrocinio de ${s.name}?`)) {
-          setSponsors(sponsors.filter((item) => item.id !== s.id));
-        }
-      },
-    },
+    { label: 'Borrar', icon: <Trash size={16} />, variant: 'danger' as const, onClick: handleDelete },
   ];
 
   return (
@@ -173,6 +138,7 @@ export default function AdminSponsors() {
           onSubmit={handleSave}
           submitLabel={currentSponsor ? 'Guardar Cambios' : 'Crear Patrocinador'}
           onCancel={() => setIsModalOpen(false)}
+          errors={actionData?.errors}
         />
       </Modal>
     </div>

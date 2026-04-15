@@ -44,8 +44,7 @@ export function MediaPickerModal({ isOpen, onClose, onSelect, usedBy }: MediaPic
     }
   }, [isOpen, fetchFiles]);
 
-  const resolveUrl = (url: string) =>
-    url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
+  const resolveUrl = (url: string) => (url.startsWith('http') ? url : `${API_BASE_URL}${url}`);
 
   const handleConfirmGallery = async () => {
     if (!selected) return;
@@ -127,15 +126,9 @@ export function MediaPickerModal({ isOpen, onClose, onSelect, usedBy }: MediaPic
                     className={`${styles.gallery__item} ${selected?.id === f.id ? styles['gallery__item--selected'] : ''} ${f.inUse && selected?.id !== f.id ? styles['gallery__item--inuse'] : ''}`}
                     onClick={() => setSelected(f)}
                     onKeyUp={(e) => e.key === 'Enter' && setSelected(f)}>
-                    <img
-                      src={resolveUrl(f.url)}
-                      alt={f.originalName}
-                      className={styles.gallery__img}
-                    />
+                    <img src={resolveUrl(f.url)} alt={f.originalName} className={styles.gallery__img} />
                     {f.inUse && (
-                      <span className={`${styles.gallery__badge} ${styles['gallery__badge--inuse']}`}>
-                        En uso
-                      </span>
+                      <span className={`${styles.gallery__badge} ${styles['gallery__badge--inuse']}`}>En uso</span>
                     )}
                     {selected?.id === f.id && (
                       <div className={styles.gallery__check}>
@@ -194,7 +187,10 @@ export function MediaPickerModal({ isOpen, onClose, onSelect, usedBy }: MediaPic
                 className={styles.url__input}
                 placeholder='https://ejemplo.com/imagen.jpg'
                 value={urlInput}
-                onChange={(e) => { setUrlInput(e.target.value); setUrlPreviewError(false); }}
+                onChange={(e) => {
+                  setUrlInput(e.target.value);
+                  setUrlPreviewError(false);
+                }}
               />
               <input
                 type='text'

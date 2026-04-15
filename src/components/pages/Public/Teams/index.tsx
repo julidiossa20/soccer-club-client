@@ -33,7 +33,12 @@ const teams = [
 export default function PublicTeams() {
   return (
     <div className='container' style={{ padding: 'var(--px80) var(--px20)' }}>
-      <header style={{ marginBottom: 'var(--px50)', borderBottom: 'var(--px2) solid var(--gray-100)', paddingBottom: 'var(--px20)' }}>
+      <header
+        style={{
+          marginBottom: 'var(--px50)',
+          borderBottom: 'var(--px2) solid var(--gray-100)',
+          paddingBottom: 'var(--px20)',
+        }}>
         <h1 style={{ fontSize: '3rem', fontWeight: 900, textTransform: 'uppercase' }}>
           EQUIPOS <span style={{ color: 'var(--secondary-color)' }}>CLUB</span>
         </h1>

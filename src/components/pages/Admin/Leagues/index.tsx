@@ -1,16 +1,10 @@
 import { ShieldAlert, Edit, Trash, Globe } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
-
-interface LeagueData {
-  id: number;
-  name: string;
-  country: string;
-  category: string;
-  logo: string;
-}
+import type { ILeague } from '../../../../services';
 
 const leagueFormSchema = [
   {
@@ -44,20 +38,26 @@ const leagueFormSchema = [
 ] as const satisfies SchemaField[];
 
 export default function AdminLeagues() {
-  const [leagues, setLeagues] = useState<LeagueData[]>([
-    { id: 1, name: 'Liga BetPlay DIMAYOR', country: 'Colombia', category: 'Primera A', logo: '⚽' },
-    { id: 2, name: 'Torneo Águila', country: 'Colombia', category: 'Segunda B', logo: '🏆' },
-  ]);
+  const leagues = useLoaderData();
+  const actionData = useActionData();
+  const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentLeague, setCurrentLeague] = useState<Partial<LeagueData> | null>(null);
+  const [currentLeague, setCurrentLeague] = useState<Partial<ILeague> | null>(null);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      setIsModalOpen(false);
+      setCurrentLeague(null);
+    }
+  }, [actionData]);
 
   const handleOpenAdd = () => {
     setCurrentLeague(null);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (league: LeagueData) => {
+  const handleOpenEdit = (league: ILeague) => {
     setCurrentLeague(league);
     setIsModalOpen(true);
   };
@@ -65,21 +65,16 @@ export default function AdminLeagues() {
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
+    if (currentLeague?.id) formData.append('id', String(currentLeague.id));
+    formData.append('intent', currentLeague?.id ? 'update' : 'create');
 
-    if (currentLeague?.id) {
-      setLeagues(leagues.map((l) => (l.id === currentLeague.id ? ({ ...l, ...data } as LeagueData) : l)));
-    } else {
-      const newLeague: LeagueData = {
-        id: Math.max(...leagues.map((l) => l.id)) + 1,
-        name: data.name as string,
-        country: data.country as string,
-        category: data.category as string,
-        logo: '⚽',
-      };
-      setLeagues([...leagues, newLeague]);
+    submit(formData, { method: 'post' });
+  };
+
+  const handleDelete = (league: ILeague) => {
+    if (window.confirm(`¿Eliminar la liga ${league.name}?`)) {
+      submit({ id: String(league.id), intent: 'delete' }, { method: 'post' });
     }
-    setIsModalOpen(false);
   };
 
   const columns = [
@@ -110,11 +105,7 @@ export default function AdminLeagues() {
       label: 'Borrar',
       icon: <Trash size={16} />,
       variant: 'danger' as const,
-      onClick: (l: LeagueData) => {
-        if (window.confirm(`¿Eliminar la liga ${l.name}?`)) {
-          setLeagues(leagues.filter((item) => item.id !== l.id));
-        }
-      },
+      onClick: handleDelete,
     },
   ];
 
@@ -140,6 +131,7 @@ export default function AdminLeagues() {
           onSubmit={handleSave}
           submitLabel={currentLeague ? 'Guardar Cambios' : 'Crear Liga'}
           onCancel={() => setIsModalOpen(false)}
+          errors={actionData?.errors}
         />
       </Modal>
     </div>
