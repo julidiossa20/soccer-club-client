@@ -1,24 +1,26 @@
 import {
-  LayoutDashboard,
-  Users,
-  Trophy,
-  UserCircle,
-  Calendar,
-  Newspaper,
-  Edit3,
-  LogOut,
-  ClipboardList,
-  ShieldAlert,
-  History,
-  Image as ImageIcon,
   Award,
   BarChart3,
+  Briefcase,
+  Calendar,
   ChevronDown,
   ChevronRight,
-  Briefcase,
+  ClipboardList,
+  Edit3,
+  History,
+  Image as ImageIcon,
+  LayoutDashboard,
+  LogOut,
+  Newspaper,
+  ShieldAlert,
+  Trophy,
+  UserCircle,
+  Users,
 } from 'lucide-react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { NavLink, Outlet, useLoaderData, useNavigate } from 'react-router-dom';
+import { logout, type AuthUser } from '../../../store/slices/authSlice';
 import styles from './AdminLayout.module.css';
 
 interface NavItem {
@@ -72,6 +74,8 @@ const navItems: NavItem[] = [
 ];
 
 export default function AdminLayout() {
+  const { name } = useLoaderData<AuthUser>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [openMenus, setOpenMenus] = useState<string[]>(['Club']);
 
@@ -80,17 +84,17 @@ export default function AdminLayout() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    void navigate('/auth/login');
+    dispatch(logout());
+    void navigate('/');
   };
 
   return (
     <div className={styles.admin}>
       <aside className={styles.admin__sidebar}>
-        <div className={styles['admin__sidebar-header']}>
+        <NavLink to={'/'} className={styles['admin__sidebar-header']}>
           <h3>FUTBOL CLUB</h3>
           <p>Gestión Deportiva</p>
-        </div>
+        </NavLink>
 
         <nav className={styles['admin__sidebar-nav']}>
           <ul>
@@ -149,8 +153,11 @@ export default function AdminLayout() {
             <span>Admin Dashboard</span>
           </div>
           <div className={styles['admin__user-info']}>
-            <div className={styles['admin__user-avatar']}>AJ</div>
-            <span>Admin Juan</span>
+            <div className={styles['admin__user-avatar']}>
+              {name.split(' ')[0][0].toUpperCase()}
+              {name.split(' ')[1][0].toUpperCase()}
+            </div>
+            <span>{name.split(' ')[0]}</span>
           </div>
         </header>
 

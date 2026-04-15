@@ -1,10 +1,12 @@
 import { redirect } from 'react-router-dom';
-import { store } from '../../../store';
+import getAuthState from '../../../helper/getAuthState';
 
-export function profileLoader() {
-  const { auth } = store.getState();
+export async function profileLoader() {
+  const auth = await getAuthState();
+
   if (!auth.isAuthenticated) {
     return redirect('/');
   }
+
   return auth;
 }
