@@ -1,46 +1,128 @@
-import { Calendar, Edit, Trash } from 'lucide-react';
+import { Calendar, Edit, Trash, MapPin, Trophy } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
-import { matchService } from '../../../../services';
+import { Modal } from '../../../core/Modal';
+import { Form, type SchemaField } from '../../../core/Form';
 
 export default function AdminMatches() {
-  const [matches, setMatches] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { matches, seasons } = useLoaderData() as { matches: any[]; seasons: any[] };
+  const actionData = useActionData() as any;
+  const submit = useSubmit();
 
-  const fetchMatches = async () => {
-    setLoading(true);
-    const res = await matchService.getAll();
-    if (res.success) setMatches(res.data);
-    setLoading(false);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentMatch, setCurrentMatch] = useState<Partial<any> | null>(null);
 
   useEffect(() => {
-    fetchMatches();
-  }, []);
+    if (actionData?.success) {
+      setIsModalOpen(false);
+      setCurrentMatch(null);
+    }
+  }, [actionData]);
+
+  const seasonOptions = seasons.map((s) => ({ value: String(s.id), label: `${s.name} (${s.year})` }));
+
+  const matchFormSchema: SchemaField[] = [
+    {
+      key: 'opponent',
+      label: 'Rival',
+      type: 'text',
+      required: true,
+      placeholder: 'Ej. FC Barcelona',
+      leftIcon: <Trophy size={16} />,
+    },
+    {
+      key: 'seasonId',
+      label: 'Temporada / Competición',
+      type: 'select',
+      required: true,
+      options: seasonOptions,
+      leftIcon: <Calendar size={16} />,
+    },
+    {
+      key: 'date',
+      label: 'Fecha y Hora',
+      type: 'date',
+      required: true,
+    },
+    {
+      key: 'isHome',
+      label: 'Localía',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'true', label: 'Local' },
+        { value: 'false', label: 'Visitante' },
+      ],
+    },
+    {
+      key: 'stadium',
+      label: 'Estadio / Sede',
+      type: 'text',
+      placeholder: 'Ej. Camp Nou',
+      leftIcon: <MapPin size={16} />,
+    },
+    {
+      key: 'status',
+      label: 'Estado',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'scheduled', label: 'Programado' },
+        { value: 'live', label: 'En Vivo' },
+        { value: 'finished', label: 'Finalizado' },
+      ],
+    },
+  ];
+
+  const handleOpenAdd = () => {
+    setCurrentMatch(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (match: any) => {
+    setCurrentMatch({
+      ...match,
+      seasonId: match.season?.id ? String(match.season.id) : '',
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (match: any) => {
+    if (window.confirm(`¿Eliminar partido contra ${match.opponent}?`)) {
+      submit({ id: String(match.id), intent: 'delete' }, { method: 'post' });
+    }
+  };
+
+  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    if (currentMatch?.id) formData.append('id', String(currentMatch.id));
+    formData.append('intent', currentMatch?.id ? 'update' : 'create');
+
+    submit(formData, { method: 'post' });
+  };
 
   const columns = [
     {
       key: 'date',
       label: 'Fecha',
-      render: (val: string) => (val ? new Date(val).toLocaleString() : 'N/A'),
+      render: (val: string) => (val ? new Date(val).toLocaleDateString() : 'N/A'),
     },
     { key: 'opponent', label: 'Rival' },
-    {
-      key: 'isHome',
-      label: 'Localía',
-      render: (val: boolean) => (val ? 'Local' : 'Visitante'),
-    },
+    { key: 'season', label: 'Temporada', render: (_: any, item: any) => item.season?.name || 'N/A' },
     {
       key: 'status',
       label: 'Estado',
       render: (val: string) => (
         <span
           style={{
-            padding: '2px 6px',
-            borderRadius: '4px',
-            fontSize: '0.8rem',
+            padding: '2px 8px',
             background: 'var(--info-light)',
             color: 'var(--info-color)',
+            borderRadius: '10px',
+            fontSize: '0.8rem',
+            fontWeight: 600,
           }}>
           {val?.toUpperCase()}
         </span>
@@ -49,39 +131,35 @@ export default function AdminMatches() {
   ];
 
   const actions = [
-    {
-      label: 'Reprogramar',
-      icon: <Calendar size={16} />,
-      onClick: (m: any) => console.log('Reschedule', m),
-    },
-    {
-      label: 'Editar',
-      icon: <Edit size={16} />,
-      onClick: (m: any) => console.log('Edit', m),
-    },
-    {
-      label: 'Borrar',
-      icon: <Trash size={16} />,
-      variant: 'danger' as const,
-      onClick: async (m: any) => {
-        if (window.confirm(`¿Eliminar partido contra ${m.opponent}?`)) {
-          const res = await matchService.delete(m.id);
-          if (res.success) fetchMatches();
-        }
-      },
-    },
+    { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
+    { label: 'Borrar', icon: <Trash size={16} />, variant: 'danger' as const, onClick: handleDelete },
   ];
 
   return (
-    <DataGrid
-      idKey='id'
-      title='Gestión de Partidos'
-      data={matches}
-      columns={columns}
-      onAdd={() => undefined}
-      addLabel='Planificar Partido'
-      actions={actions}
-      loading={loading}
-    />
+    <div style={{ width: '100%' }}>
+      <DataGrid
+        idKey='id'
+        title='Gestión de Partidos'
+        data={matches}
+        columns={columns}
+        onAdd={handleOpenAdd}
+        addLabel='Programar Partido'
+        actions={actions}
+      />
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={currentMatch ? 'Editar Partido' : 'Nuevo Partido'}>
+        <Form
+          schema={matchFormSchema}
+          values={currentMatch ?? {}}
+          onSubmit={handleSave}
+          submitLabel={currentMatch ? 'Guardar Cambios' : 'Crear Partido'}
+          onCancel={() => setIsModalOpen(false)}
+          errors={actionData?.errors}
+        />
+      </Modal>
+    </div>
   );
 }

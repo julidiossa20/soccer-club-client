@@ -4,9 +4,10 @@ import { z } from 'zod';
 const seasonSchema = z.object({
   name: z.string().min(2, 'El nombre es obligatorio'),
   year: z.string().regex(/^\d+$/, 'Debe ser un número'),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   status: z.string(),
+  leagueId: z.string().min(1, 'La liga es obligatoria'),
 });
 
 export async function actionSeasons({ request }: { request: Request }) {
@@ -19,12 +20,18 @@ export async function actionSeasons({ request }: { request: Request }) {
     return { success: response.success, message: response.message };
   }
 
-  const data = Object.fromEntries(formData);
-  const validation = seasonSchema.safeParse(data);
+  const rawData = Object.fromEntries(formData);
+  const validation = seasonSchema.safeParse(rawData);
 
   if (!validation.success) {
     return { errors: validation.error.flatten().fieldErrors };
   }
+
+  // Transform for TypeORM relation
+  const data = {
+    ...validation.data,
+    league: { id: Number(validation.data.leagueId) },
+  };
 
   let response;
   if (id) {
@@ -35,10 +42,10 @@ export async function actionSeasons({ request }: { request: Request }) {
 
   if (!response.success) {
     return {
-      errors: response.errors?.reduce((acc, { property, messages }) => {
+      errors: response.errors?.reduce((acc: any, { property, messages }: any) => {
         acc[property] = messages;
         return acc;
-      }, {} as any),
+      }, {}),
       message: response.message,
     };
   }

@@ -1,50 +1,14 @@
-import { Trophy, Edit, Trash, MapPin, User, Hash } from 'lucide-react';
+import { Trophy, Edit, Trash, MapPin, User, Hash, Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
 import type { ITeam } from '../../../../services';
-// import { ITeam } from '../../../../services/adminServices';
-
-const teamFormSchema = [
-  {
-    key: 'name',
-    label: 'Nombre del Equipo',
-    type: 'text',
-    required: true,
-    placeholder: 'Nombre oficial',
-    leftIcon: <Trophy size={16} />,
-  },
-  {
-    key: 'city',
-    label: 'Ciudad / Sede',
-    type: 'text',
-    required: true,
-    placeholder: 'Ej. Madrid, Barcelona...',
-    leftIcon: <MapPin size={16} />,
-  },
-  {
-    key: 'manager',
-    label: 'Entrenador',
-    type: 'text',
-    required: true,
-    placeholder: 'Nombre del DT',
-    leftIcon: <User size={16} />,
-  },
-  {
-    key: 'points',
-    label: 'Puntos en Liga',
-    type: 'number',
-    required: true,
-    placeholder: '0',
-    leftIcon: <Hash size={16} />,
-  },
-] as const satisfies SchemaField[];
 
 export default function AdminTeams() {
-  const teams = useLoaderData();
-  const actionData = useActionData();
+  const { teams, seasons } = useLoaderData() as { teams: ITeam[]; seasons: any[] };
+  const actionData = useActionData() as any;
   const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,13 +21,62 @@ export default function AdminTeams() {
     }
   }, [actionData]);
 
+  const seasonOptions = seasons.map((s) => ({ value: String(s.id), label: `${s.name} (${s.year})` }));
+
+  const teamFormSchema: SchemaField[] = [
+    {
+      key: 'name',
+      label: 'Nombre del Equipo',
+      type: 'text',
+      required: true,
+      placeholder: 'Nombre oficial',
+      leftIcon: <Trophy size={16} />,
+    },
+    {
+      key: 'seasonId',
+      label: 'Temporada en la que participa',
+      type: 'select',
+      required: true,
+      options: seasonOptions,
+      leftIcon: <Calendar size={16} />,
+    },
+    {
+      key: 'city',
+      label: 'Ciudad / Sede',
+      type: 'text',
+      required: true,
+      placeholder: 'Ej. Madrid, Barcelona...',
+      leftIcon: <MapPin size={16} />,
+    },
+    {
+      key: 'manager',
+      label: 'Entrenador',
+      type: 'text',
+      required: true,
+      placeholder: 'Nombre del DT',
+      leftIcon: <User size={16} />,
+    },
+    {
+      key: 'points',
+      label: 'Puntos en Liga',
+      type: 'number',
+      required: true,
+      placeholder: '0',
+      leftIcon: <Hash size={16} />,
+    },
+  ];
+
   const handleOpenAdd = () => {
     setCurrentTeam(null);
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (team: ITeam) => {
-    setCurrentTeam(team);
+    setCurrentTeam({
+      ...team,
+      // @ts-ignore
+      seasonId: team.season?.id ? String(team.season.id) : '',
+    });
     setIsModalOpen(true);
   };
 
@@ -84,6 +97,11 @@ export default function AdminTeams() {
 
   const columns = [
     { key: 'name', label: 'Nombre' },
+    {
+      key: 'season',
+      label: 'Temporada',
+      render: (_: any, item: any) => item.season?.name || 'N/A',
+    },
     { key: 'city', label: 'Ciudad' },
     { key: 'manager', label: 'Entrenador' },
     { key: 'points', label: 'Puntos' },

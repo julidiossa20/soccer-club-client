@@ -5,7 +5,10 @@ import AdminDashboard from '../components/pages/Admin/Dashboard';
 import AdminLeagues from '../components/pages/Admin/Leagues';
 import { actionLeagues } from '../components/pages/Admin/Leagues/actionLeagues';
 import { loaderLeagues } from '../components/pages/Admin/Leagues/loaderLeagues';
+import { actionMatches } from '../components/pages/Admin/Matches/actionMatches';
 import AdminMatches from '../components/pages/Admin/Matches';
+import { loaderMatches } from '../components/pages/Admin/Matches/loaderMatches';
+import { loaderMatchPlanning } from '../components/pages/Admin/MatchPlanning/loaderMatchPlanning';
 import MatchPlanning from '../components/pages/Admin/MatchPlanning';
 import { actionNews } from '../components/pages/Admin/News/actionNews';
 import AdminNews from '../components/pages/Admin/News';
@@ -78,10 +81,13 @@ const admin = {
     {
       path: 'partidos',
       element: <AdminMatches />,
+      loader: loaderMatches,
+      action: actionMatches,
     },
     {
       path: 'planeacion-partidos',
       action: matchAction,
+      loader: loaderMatchPlanning,
       element: <MatchPlanning />,
     },
     {

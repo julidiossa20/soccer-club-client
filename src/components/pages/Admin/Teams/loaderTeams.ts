@@ -1,7 +1,14 @@
-import { HttpClient, type ITeam } from '../../../../services';
-// import { ITeam } from '../../../../services/adminServices';
+import { HttpClient, adminConfigService } from '../../../../services';
+import type { ITeam } from '../../../../services/adminServices';
 
 export async function loaderTeams() {
-  const response = await HttpClient.get<ITeam[]>('/api/v1/team');
-  return response.success ? response.data : [];
+  const [resTeams, resCatalogs] = await Promise.all([
+    HttpClient.get<ITeam[]>('/api/v1/team'),
+    adminConfigService.getCatalogs(),
+  ]);
+
+  return {
+    teams: resTeams.success ? resTeams.data : [],
+    seasons: resCatalogs.success ? resCatalogs.data.seasons : [],
+  };
 }

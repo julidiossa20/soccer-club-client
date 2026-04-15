@@ -1,54 +1,13 @@
-import { Calendar, Edit, Trash } from 'lucide-react';
+import { Calendar, Edit, Trash, Shield } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
 
-const seasonFormSchema = [
-  {
-    key: 'name',
-    label: 'Nombre de la Temporada',
-    type: 'text',
-    required: true,
-    placeholder: 'Ej. Primer Semestre 2025',
-    leftIcon: <Calendar size={16} />,
-  },
-  {
-    key: 'year',
-    label: 'Año',
-    type: 'number',
-    required: true,
-    placeholder: '2025',
-  },
-  {
-    key: 'startDate',
-    label: 'Fecha Inicio',
-    type: 'date',
-    required: true,
-  },
-  {
-    key: 'endDate',
-    label: 'Fecha Fin',
-    type: 'date',
-    required: true,
-  },
-  {
-    key: 'status',
-    label: 'Estado',
-    type: 'select',
-    required: true,
-    options: [
-      { value: 'active', label: 'En Curso' },
-      { value: 'upcoming', label: 'Próxima' },
-      { value: 'finished', label: 'Finalizada' },
-    ],
-  },
-] as const satisfies SchemaField[];
-
 export default function AdminSeasons() {
-  const seasons = useLoaderData();
-  const actionData = useActionData();
+  const { seasons, leagues } = useLoaderData() as { seasons: any[]; leagues: any[] };
+  const actionData = useActionData() as any;
   const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,13 +20,68 @@ export default function AdminSeasons() {
     }
   }, [actionData]);
 
+  const leagueOptions = leagues.map((l) => ({ value: String(l.id), label: l.name }));
+
+  const seasonFormSchema: SchemaField[] = [
+    {
+      key: 'name',
+      label: 'Nombre de la Temporada',
+      type: 'text',
+      required: true,
+      placeholder: 'Ej. Temporada 2024/2025',
+      leftIcon: <Calendar size={16} />,
+    },
+    {
+      key: 'leagueId',
+      label: 'Liga Correspondiente',
+      type: 'select',
+      required: true,
+      options: leagueOptions,
+      leftIcon: <Shield size={16} />,
+    },
+    {
+      key: 'year',
+      label: 'Año',
+      type: 'number',
+      required: true,
+      placeholder: '2024',
+    },
+    {
+      key: 'startDate',
+      label: 'Fecha Inicio',
+      type: 'date',
+      required: false,
+    },
+    {
+      key: 'endDate',
+      label: 'Fecha Fin',
+      type: 'date',
+      required: false,
+    },
+    {
+      key: 'status',
+      label: 'Estado',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'active', label: 'En Curso' },
+        { value: 'upcoming', label: 'Próxima' },
+        { value: 'finished', label: 'Finalizada' },
+      ],
+    },
+  ];
+
   const handleOpenAdd = () => {
     setCurrentSeason(null);
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (season: any) => {
-    setCurrentSeason(season);
+    setCurrentSeason({
+      ...season,
+      // Ensure leagueId is set for the select component
+      leagueId: season.league?.id ? String(season.league.id) : '',
+    });
     setIsModalOpen(true);
   };
 
@@ -89,8 +103,7 @@ export default function AdminSeasons() {
   const columns = [
     { key: 'name', label: 'Nombre' },
     { key: 'year', label: 'Año' },
-    { key: 'startDate', label: 'Inicio' },
-    { key: 'endDate', label: 'Fin' },
+    { key: 'leagueLabel', label: 'Liga', render: (_: any, item: any) => item.league?.name || 'N/A' },
     {
       key: 'status',
       label: 'Estado',

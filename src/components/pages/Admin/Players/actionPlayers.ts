@@ -6,6 +6,7 @@ const playerSchema = z.object({
   position: z.string().min(1, 'La posición es obligatoria'),
   number: z.string().regex(/^\d+$/, 'Debe ser un número'),
   age: z.string().regex(/^\d+$/, 'Debe ser un número'),
+  teamId: z.string().min(1, 'El equipo es obligatorio'),
 });
 
 export async function actionPlayers({ request }: { request: Request }) {
@@ -18,18 +19,19 @@ export async function actionPlayers({ request }: { request: Request }) {
     return { success: response.success, message: response.message };
   }
 
-  const data = Object.fromEntries(formData);
-  const validation = playerSchema.safeParse(data);
+  const rawData = Object.fromEntries(formData);
+  const validation = playerSchema.safeParse(rawData);
 
   if (!validation.success) {
     return { errors: validation.error.flatten().fieldErrors };
   }
 
   const payload = {
-    ...data,
-    number: Number(data.number),
-    age: Number(data.age),
+    ...validation.data,
+    number: Number(validation.data.number),
+    age: Number(validation.data.age),
     photo: formData.get('photo') || '',
+    team: { id: Number(validation.data.teamId) },
   };
 
   let response;
@@ -41,10 +43,10 @@ export async function actionPlayers({ request }: { request: Request }) {
 
   if (!response.success) {
     return {
-      errors: response.errors?.reduce((acc, { property, messages }) => {
+      errors: response.errors?.reduce((acc: any, { property, messages }: any) => {
         acc[property] = messages;
         return acc;
-      }, {} as any),
+      }, {}),
       message: response.message,
     };
   }

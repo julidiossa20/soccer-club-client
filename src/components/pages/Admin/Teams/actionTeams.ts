@@ -6,6 +6,7 @@ const teamSchema = z.object({
   city: z.string().min(1, 'La ciudad es obligatoria'),
   manager: z.string().min(1, 'El entrenador es obligatorio'),
   points: z.string().regex(/^\d+$/, 'Debe ser un número'),
+  seasonId: z.string().min(1, 'La temporada es obligatoria'),
 });
 
 export async function actionTeams({ request }: { request: Request }) {
@@ -18,16 +19,17 @@ export async function actionTeams({ request }: { request: Request }) {
     return { success: response.success, message: response.message };
   }
 
-  const data = Object.fromEntries(formData);
-  const validation = teamSchema.safeParse(data);
+  const rawData = Object.fromEntries(formData);
+  const validation = teamSchema.safeParse(rawData);
 
   if (!validation.success) {
     return { errors: validation.error.flatten().fieldErrors };
   }
 
   const payload = {
-    ...data,
-    points: Number(data.points),
+    ...validation.data,
+    points: Number(validation.data.points),
+    season: { id: Number(validation.data.seasonId) },
   };
 
   let response;
@@ -39,10 +41,10 @@ export async function actionTeams({ request }: { request: Request }) {
 
   if (!response.success) {
     return {
-      errors: response.errors?.reduce((acc, { property, messages }) => {
+      errors: response.errors?.reduce((acc: any, { property, messages }: any) => {
         acc[property] = messages;
         return acc;
-      }, {} as any),
+      }, {}),
       message: response.message,
     };
   }

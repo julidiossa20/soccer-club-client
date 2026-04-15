@@ -1,6 +1,13 @@
-import { HttpClient } from '../../../../services';
+import { HttpClient, adminConfigService } from '../../../../services';
 
 export async function loaderSeasons() {
-  const response = await HttpClient.get<any[]>('/api/v1/season');
-  return response.success ? response.data : [];
+  const [resSeasons, resCatalogs] = await Promise.all([
+    HttpClient.get<any[]>('/api/v1/season'),
+    adminConfigService.getCatalogs(),
+  ]);
+
+  return {
+    seasons: resSeasons.success ? resSeasons.data : [],
+    leagues: resCatalogs.success ? resCatalogs.data.leagues : [],
+  };
 }

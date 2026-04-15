@@ -1,4 +1,5 @@
 import { BaseService } from './baseService';
+import { HttpClient } from './http-client';
 
 export interface IPlayer {
   id: number;
@@ -60,3 +61,7 @@ export const newsService = new BaseService<INews>('/news');
 export const userService = new BaseService<IUser>('/user');
 export const matchService = new BaseService<any>('/match');
 export const seasonService = new BaseService<any>('/season');
+
+export const adminConfigService = {
+  getCatalogs: () => HttpClient.get<{ leagues: any[], teams: any[], seasons: any[] }>('/api/v1/admin/catalogs')
+};

@@ -1,56 +1,15 @@
-import { UserCircle, Edit, Trash, Eye, User, Trophy, Hash, ImageIcon } from 'lucide-react';
+import { UserCircle, Edit, Trash, Eye, User, Trophy, Hash, ImageIcon, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
 import { MediaPickerModal } from '../../../core/MediaPickerModal';
-import type { IPlayer } from '../../../../services';
-// import { IPlayer } from '../../../../services/adminServices';
-
-const playerFormSchema = [
-  {
-    key: 'name',
-    label: 'Nombre completo',
-    type: 'text',
-    required: true,
-    placeholder: 'Ej. Lamine Yamal',
-    leftIcon: <User size={16} />,
-  },
-  {
-    key: 'position',
-    label: 'Posición',
-    type: 'select',
-    required: true,
-    leftIcon: <Trophy size={16} />,
-    options: [
-      { value: 'POR', label: 'Portero' },
-      { value: 'DEF', label: 'Defensa' },
-      { value: 'MED', label: 'Mediocentro' },
-      { value: 'DEL', label: 'Delantero' },
-    ],
-  },
-  {
-    key: 'number',
-    label: 'Dorsal',
-    type: 'number',
-    required: true,
-    placeholder: '10',
-    leftIcon: <Hash size={16} />,
-  },
-  {
-    key: 'age',
-    label: 'Edad',
-    type: 'number',
-    required: true,
-    placeholder: '18',
-    leftIcon: <Hash size={16} />,
-  },
-] as const satisfies SchemaField[];
+import type { IPlayer, ITeam } from '../../../../services';
 
 export default function AdminPlayers() {
-  const players = useLoaderData();
-  const actionData = useActionData();
+  const { players, teams } = useLoaderData() as { players: IPlayer[]; teams: ITeam[] };
+  const actionData = useActionData() as any;
   const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,13 +23,67 @@ export default function AdminPlayers() {
     }
   }, [actionData]);
 
+  const teamOptions = teams.map((t) => ({ value: String(t.id), label: `${t.name} (${t.category})` }));
+
+  const playerFormSchema: SchemaField[] = [
+    {
+      key: 'name',
+      label: 'Nombre completo',
+      type: 'text',
+      required: true,
+      placeholder: 'Ej. Lamine Yamal',
+      leftIcon: <User size={16} />,
+    },
+    {
+      key: 'teamId',
+      label: 'Equipo / Categoría',
+      type: 'select',
+      required: true,
+      options: teamOptions,
+      leftIcon: <Users size={16} />,
+    },
+    {
+      key: 'position',
+      label: 'Posición',
+      type: 'select',
+      required: true,
+      leftIcon: <Trophy size={16} />,
+      options: [
+        { value: 'POR', label: 'Portero' },
+        { value: 'DEF', label: 'Defensa' },
+        { value: 'MED', label: 'Mediocentro' },
+        { value: 'DEL', label: 'Delantero' },
+      ],
+    },
+    {
+      key: 'number',
+      label: 'Dorsal',
+      type: 'number',
+      required: true,
+      placeholder: '10',
+      leftIcon: <Hash size={16} />,
+    },
+    {
+      key: 'age',
+      label: 'Edad',
+      type: 'number',
+      required: true,
+      placeholder: '18',
+      leftIcon: <Hash size={16} />,
+    },
+  ];
+
   const handleOpenAdd = () => {
     setCurrentPlayer(null);
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (player: IPlayer) => {
-    setCurrentPlayer(player);
+    setCurrentPlayer({
+      ...player,
+      // @ts-ignore
+      teamId: player.team?.id ? String(player.team.id) : '',
+    });
     setIsModalOpen(true);
   };
 
@@ -93,6 +106,11 @@ export default function AdminPlayers() {
   const columns = [
     { key: 'name', label: 'Nombre' },
     {
+      key: 'team',
+      label: 'Equipo',
+      render: (_: any, item: any) => item.team?.name || 'Vagas',
+    },
+    {
       key: 'position',
       label: 'Posición',
       render: (val: string) => (
@@ -110,11 +128,9 @@ export default function AdminPlayers() {
       ),
     },
     { key: 'number', label: 'Dorsal' },
-    { key: 'age', label: 'Edad' },
   ];
 
   const actions = [
-    { label: 'Ficha', icon: <Eye size={16} />, onClick: (p: IPlayer) => console.log('View', p) },
     { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
     { label: 'Borrar', icon: <Trash size={16} />, variant: 'danger' as const, onClick: handleDelete },
   ];

@@ -1,104 +1,23 @@
-import { Form as RouterForm, useActionData } from 'react-router-dom';
+import { Form as RouterForm, useActionData, useLoaderData } from 'react-router-dom';
 import { Stadium } from '../../../core/Stadium';
 import { Button } from '../../../core/Button/Button';
 import styles from './MatchPlanning.module.css';
-
-const MOCK_PLAYERS = [
-  {
-    id: 1,
-    name: 'Ter Stegen',
-    pos: 'POR',
-    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&h=256&fit=crop',
-    x: 8,
-    y: 50,
-  },
-  // Defensa
-  {
-    id: 2,
-    name: 'Koundé',
-    pos: 'DEF',
-    photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=256&h=256&fit=crop',
-    x: 25,
-    y: 20,
-  },
-  {
-    id: 3,
-    name: 'Pau Cubarsí',
-    pos: 'DEF',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&fit=crop',
-    x: 25,
-    y: 40,
-  },
-  {
-    id: 4,
-    name: 'Íñigo Martínez',
-    pos: 'DEF',
-    photo: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=256&h=256&fit=crop',
-    x: 25,
-    y: 60,
-  },
-  {
-    id: 5,
-    name: 'Balde',
-    pos: 'DEF',
-    photo: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?q=80&w=256&h=256&fit=crop',
-    x: 25,
-    y: 80,
-  },
-  // Mediocampo
-  {
-    id: 6,
-    name: 'Casadó',
-    pos: 'MED',
-    photo: 'https://images.unsplash.com/photo-1519085184528-7cba7f4d75a1?q=80&w=256&h=256&fit=crop',
-    x: 50,
-    y: 30,
-  },
-  {
-    id: 7,
-    name: 'Pedri',
-    pos: 'MED',
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&h=256&fit=crop',
-    x: 50,
-    y: 50,
-  },
-  {
-    id: 8,
-    name: 'Dani Olmo',
-    pos: 'MED',
-    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&h=256&fit=crop',
-    x: 50,
-    y: 70,
-  },
-  {
-    id: 9,
-    name: 'Raphinha',
-    pos: 'DEL',
-    photo: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=256&h=256&fit=crop',
-    x: 75,
-    y: 25,
-  },
-  // Delantera
-  {
-    id: 10,
-    name: 'Lewandowski',
-    pos: 'DEL',
-    photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=256&h=256&fit=crop',
-    x: 85,
-    y: 50,
-  },
-  {
-    id: 11,
-    name: 'Lamine Yamal',
-    pos: 'DEL',
-    photo: 'https://images.unsplash.com/photo-1544602851-24711f3e164d?q=80&w=256&h=256&fit=crop',
-    x: 75,
-    y: 75,
-  },
-];
+import type { IPlayer } from '../../../../services';
+// import { IPlayer } from '../../../../services/adminServices';
 
 export default function MatchPlanning() {
-  const actionData = useActionData()! || {};
+  const { players, nextMatch } = useLoaderData() as { players: IPlayer[]; nextMatch: any };
+  const actionData = (useActionData() as any) || {};
+
+  // Formato para el estadio, si no tiene posición definida (x, y), colocamos en el banquillo
+  const stadiumPlayers = players.map((p, idx) => ({
+    id: p.id,
+    name: p.name,
+    pos: p.position,
+    photo: p.photo || '',
+    x: idx < 11 ? (idx % 2 === 0 ? 30 : 50) : 0, // Mock positions if not defined
+    y: idx < 11 ? (idx % 11) * 8 + 10 : 0,
+  }));
 
   return (
     <div className={styles.container}>
@@ -107,13 +26,15 @@ export default function MatchPlanning() {
           <h1 className={styles.title}>
             PLANEACIÓN <span className={styles.highlight}>DE PARTIDO</span>
           </h1>
-          <p>Define la estrategia y el once titular para el próximo encuentro.</p>
+          <p>
+            Define la estrategia y el once titular para el encuentro contra {nextMatch?.opponent || 'el próximo rival'}.
+          </p>
         </div>
       </header>
 
       <div className={styles.content}>
         <div>
-          <Stadium title='Formación inicial' players={MOCK_PLAYERS} />
+          <Stadium title='Estrategia Visual' players={stadiumPlayers.slice(0, 11)} />
         </div>
 
         <aside className={styles.sidebar}>
@@ -130,6 +51,7 @@ export default function MatchPlanning() {
                   id='opponent'
                   name='opponent'
                   type='text'
+                  defaultValue={nextMatch?.opponent || ''}
                   placeholder='Ej: Real Madrid'
                   style={{
                     width: '100%',
@@ -147,6 +69,7 @@ export default function MatchPlanning() {
                   id='date'
                   name='date'
                   type='date'
+                  defaultValue={nextMatch?.date ? new Date(nextMatch.date).toISOString().split('T')[0] : ''}
                   style={{
                     width: '100%',
                     padding: 'var(--px10)',
@@ -165,10 +88,24 @@ export default function MatchPlanning() {
           </div>
 
           <div className='card' style={{ padding: 'var(--px30)' }}>
-            <h3>EQUIPO TÉCNICO</h3>
-            <p style={{ color: 'var(--gray-600)', marginTop: 'var(--px10)' }}>
-              Asigna los roles del staff para este partido.
-            </p>
+            <h3>JUGADORES DISPONIBLES</h3>
+            <div style={{ marginTop: 'var(--px10)', display: 'flex', flexWrap: 'wrap', gap: 'var(--px10)' }}>
+              {players.map((p) => (
+                <div
+                  key={p.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--px10)',
+                    padding: 'var(--px5) var(--px10)',
+                    background: 'var(--gray-100)',
+                    borderRadius: 'var(--px4)',
+                    fontSize: '0.8rem',
+                  }}>
+                  {p.name} ({p.position})
+                </div>
+              ))}
+            </div>
           </div>
         </aside>
       </div>
