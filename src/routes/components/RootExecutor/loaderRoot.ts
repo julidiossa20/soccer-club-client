@@ -15,7 +15,11 @@ export default async function loaderRoot() {
     return null;
   }
 
-  const response = await HttpClient.get<Omit<Login.Data, 'token'>>(`/api/v1/user/profile`);
+  const response = await HttpClient.request<Omit<Login.Data, 'token'>>({
+    endpoint: `/api/v1/user/profile`,
+    method: 'GET',
+    optionsToast: { showToasts: false },
+  });
   if (response.success && response.data) {
     const user = response.data;
     store.dispatch(loginSuccess({ user }));

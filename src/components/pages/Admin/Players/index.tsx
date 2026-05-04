@@ -108,12 +108,12 @@ export default function AdminPlayers() {
     {
       key: 'team',
       label: 'Equipo',
-      render: (_: any, item: any) => item.team?.name || 'Vagas',
+      render: (_: unknown, item: IPlayer) => item.team?.name || 'Vagas',
     },
     {
       key: 'position',
       label: 'Posición',
-      render: (val: string) => (
+      render: (val: unknown) => (
         <span
           style={{
             background: 'var(--gray-100)',
@@ -123,10 +123,11 @@ export default function AdminPlayers() {
             fontWeight: 600,
             color: 'var(--primary-color)',
           }}>
-          {val}
+          {val as string}
         </span>
       ),
     },
+
     { key: 'number', label: 'Dorsal' },
   ];
 

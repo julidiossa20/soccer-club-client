@@ -1,10 +1,9 @@
-import { ShieldAlert, Edit, Trash, Globe } from 'lucide-react';
+import { Edit, Globe, ShieldAlert, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
-import DataGrid from '../../../core/DataGrid';
-import { Modal } from '../../../core/Modal';
+import { useActionData, useLoaderData } from 'react-router-dom';
+import DataGrid, { type Action as DataGridAction } from '../../../core/DataGrid';
 import { Form, type SchemaField } from '../../../core/Form';
-import type { ILeague } from '../../../../services';
+import { Modal } from '../../../core/Modal';
 
 const leagueFormSchema = [
   {
@@ -14,6 +13,7 @@ const leagueFormSchema = [
     required: true,
     placeholder: 'Ej. Liga BetPlay, Premier League...',
     leftIcon: <ShieldAlert size={16} />,
+    disabled: false,
   },
   {
     key: 'country',
@@ -22,12 +22,14 @@ const leagueFormSchema = [
     required: true,
     placeholder: 'Ej. Colombia, España...',
     leftIcon: <Globe size={16} />,
+    disabled: false,
   },
   {
     key: 'category',
     label: 'Categoría',
     type: 'select',
     required: true,
+    disabled: false,
     options: [
       { value: 'Primera A', label: 'Primera División' },
       { value: 'Segunda B', label: 'Segunda División' },
@@ -37,44 +39,32 @@ const leagueFormSchema = [
   },
 ] as const satisfies SchemaField[];
 
-export default function AdminLeagues() {
-  const leagues = useLoaderData();
-  const actionData = useActionData();
-  const submit = useSubmit();
+export interface AdminLeaguesState {
+  isModalOpen: boolean;
+  action: 'idle' | 'save' | 'update' | 'delete';
+  league: Partial<ILeague.League> | null;
+}
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentLeague, setCurrentLeague] = useState<Partial<ILeague> | null>(null);
+export default function AdminLeagues() {
+  const leagues = useLoaderData<ILeague.GetLeague['data']>();
+  const actionData = useActionData<{ success: boolean; errors: Record<string, string | string[]> | undefined }>();
+
+  const [state, setState] = useState<AdminLeaguesState>({ isModalOpen: false, action: 'idle', league: null });
+
+  // const paginatedData = useMemo(() => {
+  //   const start = (displayPage - 1) * pageSize;
+  //   return data.slice(start, start + pageSize);
+  // }, [data, displayPage, pageSize]);
 
   useEffect(() => {
     if (actionData?.success) {
-      setIsModalOpen(false);
-      setCurrentLeague(null);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setState({ action: 'idle', isModalOpen: false, league: null });
     }
   }, [actionData]);
 
-  const handleOpenAdd = () => {
-    setCurrentLeague(null);
-    setIsModalOpen(true);
-  };
-
-  const handleOpenEdit = (league: ILeague) => {
-    setCurrentLeague(league);
-    setIsModalOpen(true);
-  };
-
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    if (currentLeague?.id) formData.append('id', String(currentLeague.id));
-    formData.append('intent', currentLeague?.id ? 'update' : 'create');
-
-    submit(formData, { method: 'post' });
-  };
-
-  const handleDelete = (league: ILeague) => {
-    if (window.confirm(`¿Eliminar la liga ${league.name}?`)) {
-      submit({ id: String(league.id), intent: 'delete' }, { method: 'post' });
-    }
+  const handleClick = ({ action, isModalOpen, league }: AdminLeaguesState) => {
+    setState({ action, isModalOpen, league });
   };
 
   const columns = [
@@ -83,7 +73,7 @@ export default function AdminLeagues() {
     {
       key: 'category',
       label: 'Categoría',
-      render: (val: string) => (
+      render: (val: unknown) => (
         <span
           style={{
             padding: '2px 8px',
@@ -93,45 +83,52 @@ export default function AdminLeagues() {
             fontSize: '0.8rem',
             fontWeight: 600,
           }}>
-          {val}
+          {val as string}
         </span>
       ),
     },
   ];
 
-  const actions = [
-    { label: 'Editar', icon: <Edit size={16} />, onClick: handleOpenEdit },
+  const actions: DataGridAction<ILeague.League>[] = [
     {
+      name: 'edit',
+      label: 'Editar',
+      icon: <Edit size={16} />,
+      onClick: (league) => handleClick({ action: 'update', isModalOpen: true, league }),
+    },
+    {
+      name: 'delete',
       label: 'Borrar',
       icon: <Trash size={16} />,
       variant: 'danger' as const,
-      onClick: handleDelete,
+      onClick: (league) => handleClick({ action: 'delete', isModalOpen: true, league }),
     },
   ];
 
   return (
     <div style={{ width: '100%' }}>
-      <DataGrid
-        idKey='id'
+      <DataGrid<ILeague.League>
         title='Gestión de Ligas'
-        data={leagues}
-        columns={columns}
-        onAdd={handleOpenAdd}
+        onAdd={() => setState({ action: 'save', isModalOpen: true, league: null })}
         addLabel='Nueva Liga'
+        columns={columns}
         actions={actions}
+        data={leagues}
+        idKey='id'
       />
 
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={currentLeague ? 'Editar Liga' : 'Nueva Liga'}>
+        title={state.action === 'delete' ? 'Eliminar Liga' : `${state.action === 'save' ? 'Nueva' : 'Editar'} Liga`}
+        onClose={() => setState({ action: 'idle', isModalOpen: false, league: null })}
+        isOpen={state.isModalOpen}>
         <Form
-          schema={leagueFormSchema}
-          values={currentLeague ?? {}}
-          onSubmit={handleSave}
-          submitLabel={currentLeague ? 'Guardar Cambios' : 'Crear Liga'}
-          onCancel={() => setIsModalOpen(false)}
+          schema={leagueFormSchema.map((schema) => ({ ...schema, disabled: state.action === 'delete' }))}
+          onCancel={() => setState({ action: 'idle', isModalOpen: false, league: null })}
+          submitLabel={state.action === 'save' ? 'Crear Liga' : 'Guardar Cambios'}
           errors={actionData?.errors}
+          values={state.league ?? {}}
+          actionType={state.action}
+          data={state.league}
         />
       </Modal>
     </div>

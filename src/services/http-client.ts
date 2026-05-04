@@ -3,7 +3,7 @@ import { setToast } from './setToast';
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000';
 
-interface ReaquestProps {
+interface RequestProps {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   endpoint: string;
   body?: unknown;
@@ -16,9 +16,21 @@ export interface RequestOptions {
   successMessage?: string; // Mensaje de éxito a mostrar en lugar del mensaje del backend
   errorMessage?: string; //  Mensaje de error a mostrar en caso de fallo (ignora el del backend)
 }
+
+const initialOptionToast: RequestOptions = {
+  showToasts: true,
+  successMessage: undefined,
+  errorMessage: undefined,
+};
 export class HttpClient {
   static #toast = setToast();
-  static async request<T>({ endpoint, method, authtoken, body, optionsToast }: ReaquestProps): Promise<ApiResponse<T>> {
+  static async request<T>({
+    endpoint,
+    method,
+    authtoken,
+    body,
+    optionsToast = initialOptionToast,
+  }: RequestProps): Promise<ApiResponse<T>> {
     const { error: errorToast, success: successToast } = this.#toast;
     const token = localStorage.getItem('token');
     try {
@@ -49,9 +61,9 @@ export class HttpClient {
       }
 
       if (!data.success) {
-        if (!optionsToast?.showToasts) errorToast(optionsToast?.errorMessage || data.message);
+        if (optionsToast?.showToasts) errorToast(optionsToast?.errorMessage || data.message);
       } else {
-        if (!optionsToast?.showToasts) successToast(optionsToast?.successMessage || data.message);
+        if (optionsToast?.showToasts) successToast(optionsToast?.successMessage || data.message);
       }
 
       return data;
@@ -63,7 +75,7 @@ export class HttpClient {
         message: error instanceof Error ? error.message : 'Error desconocido de red',
         errors: [],
       };
-      if (!optionsToast?.showToasts) errorToast(optionsToast?.errorMessage || errorResponse.message);
+      if (optionsToast?.showToasts) errorToast(optionsToast?.errorMessage || errorResponse.message);
       return errorResponse;
     }
   }

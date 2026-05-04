@@ -151,3 +151,24 @@
     width: 100%;
   }
 }
+
+.grid__empty {
+  padding: var(--px40) !important;
+  text-align: center;
+}
+
+.grid__empty-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--px10);
+  color: var(--gray-400);
+}
+
+.grid__empty-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+

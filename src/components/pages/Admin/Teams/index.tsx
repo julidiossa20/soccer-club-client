@@ -4,11 +4,11 @@ import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
-import type { ITeam } from '../../../../services';
+import { type ITeam, type ISeason, type IErrorResponse } from '../../../../services';
 
 export default function AdminTeams() {
-  const { teams, seasons } = useLoaderData() as { teams: ITeam[]; seasons: any[] };
-  const actionData = useActionData() as any;
+  const { teams, seasons } = useLoaderData() as { teams: ITeam[]; seasons: ISeason[] };
+  const actionData = useActionData() as { success: boolean; errors?: IErrorResponse['errors'] } | undefined;
   const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,7 +100,7 @@ export default function AdminTeams() {
     {
       key: 'season',
       label: 'Temporada',
-      render: (_: any, item: any) => item.season?.name || 'N/A',
+      render: (_: unknown, item: ITeam) => item.season?.name || 'N/A',
     },
     { key: 'city', label: 'Ciudad' },
     { key: 'manager', label: 'Entrenador' },

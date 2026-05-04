@@ -9,6 +9,7 @@ export interface IPlayer {
   age: number;
   photo?: string;
   teamId?: number;
+  team?: ITeam;
 }
 
 export interface ILeague {
@@ -16,8 +17,20 @@ export interface ILeague {
   name: string;
   country: string;
   category: string;
-  logo: string;
+  logo?: string;
 }
+
+export interface ISeason {
+  id: number;
+  name: string;
+  year: string;
+  startDate?: string;
+  endDate?: string;
+  status: 'active' | 'upcoming' | 'finished';
+  league?: ILeague;
+  leagueId?: number;
+}
+
 
 export interface ITeam {
   id: number;
@@ -26,6 +39,7 @@ export interface ITeam {
   manager: string;
   points: number;
   logo?: string;
+  season?: ISeason;
 }
 
 export interface ISponsor {
@@ -60,8 +74,10 @@ export const sponsorService = new BaseService<ISponsor>('/sponsor');
 export const newsService = new BaseService<INews>('/news');
 export const userService = new BaseService<IUser>('/user');
 export const matchService = new BaseService<any>('/match');
-export const seasonService = new BaseService<any>('/season');
+export const seasonService = new BaseService<ISeason>('/season');
+
 
 export const adminConfigService = {
-  getCatalogs: () => HttpClient.get<{ leagues: any[], teams: any[], seasons: any[] }>('/api/v1/admin/catalogs')
+  getCatalogs: () => HttpClient.get<{ leagues: ILeague[]; teams: ITeam[]; seasons: ISeason[] }>('/api/v1/admin/catalogs'),
 };
+

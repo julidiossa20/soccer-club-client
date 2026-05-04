@@ -96,8 +96,9 @@ export type FieldType = SchemaField['type'];
 
 // ─── Props del componente Form ────────────────────────────────────────────────
 
-export interface FormProps<T extends SchemaField[]> {
+export interface FormProps<T extends SchemaField[], K extends object> {
   schema: T;
+  data: K | null;
   /** Valores actuales del formulario (opcional si es no controlado) */
   values?: Record<string, FieldValue>;
   /** Errores por campo */
@@ -115,6 +116,7 @@ export interface FormProps<T extends SchemaField[]> {
   /** Estado de carga manual (el botón usa useFormStatus por defecto) */
   isLoading?: boolean;
   submitLabel?: string;
+  actionType: string;
   onCancel?: () => void;
   cancelLabel?: string;
   className?: string;

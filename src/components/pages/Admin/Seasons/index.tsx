@@ -4,14 +4,15 @@ import { useLoaderData, useSubmit, useActionData } from 'react-router-dom';
 import DataGrid from '../../../core/DataGrid';
 import { Modal } from '../../../core/Modal';
 import { Form, type SchemaField } from '../../../core/Form';
+import { type ISeason, type ILeague, type IErrorResponse } from '../../../../services';
 
 export default function AdminSeasons() {
-  const { seasons, leagues } = useLoaderData() as { seasons: any[]; leagues: any[] };
-  const actionData = useActionData() as any;
+  const { seasons, leagues } = useLoaderData() as { seasons: ISeason[]; leagues: ILeague[] };
+  const actionData = useActionData() as { success: boolean; errors?: IErrorResponse['errors'] } | undefined;
   const submit = useSubmit();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentSeason, setCurrentSeason] = useState<Partial<any> | null>(null);
+  const [currentSeason, setCurrentSeason] = useState<Partial<ISeason> | null>(null);
 
   useEffect(() => {
     if (actionData?.success) {
@@ -76,16 +77,15 @@ export default function AdminSeasons() {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (season: any) => {
+  const handleOpenEdit = (season: ISeason) => {
     setCurrentSeason({
       ...season,
-      // Ensure leagueId is set for the select component
-      leagueId: season.league?.id ? String(season.league.id) : '',
+      leagueId: season.league?.id ?? undefined,
     });
     setIsModalOpen(true);
   };
 
-  const handleDelete = (season: any) => {
+  const handleDelete = (season: ISeason) => {
     if (window.confirm(`¿Eliminar la temporada ${season.name}?`)) {
       submit({ id: String(season.id), intent: 'delete' }, { method: 'post' });
     }
@@ -103,25 +103,32 @@ export default function AdminSeasons() {
   const columns = [
     { key: 'name', label: 'Nombre' },
     { key: 'year', label: 'Año' },
-    { key: 'leagueLabel', label: 'Liga', render: (_: any, item: any) => item.league?.name || 'N/A' },
+    { 
+      key: 'league', 
+      label: 'Liga', 
+      render: (_: unknown, item: ISeason) => item.league?.name || 'N/A' 
+    },
     {
       key: 'status',
       label: 'Estado',
-      render: (val: string) => (
-        <span
-          style={{
-            padding: '2px 8px',
-            background:
-              val === 'active' ? 'var(--success-light)' : val === 'finished' ? 'var(--gray-100)' : 'var(--info-light)',
-            color:
-              val === 'active' ? 'var(--success-color)' : val === 'finished' ? 'var(--gray-600)' : 'var(--info-color)',
-            borderRadius: '10px',
-            fontSize: '0.8rem',
-            fontWeight: 600,
-          }}>
-          {val?.toUpperCase()}
-        </span>
-      ),
+      render: (val: unknown) => {
+        const status = val as string;
+        return (
+          <span
+            style={{
+              padding: '2px 8px',
+              background:
+                status === 'active' ? 'var(--success-light)' : status === 'finished' ? 'var(--gray-100)' : 'var(--info-light)',
+              color:
+                status === 'active' ? 'var(--success-color)' : status === 'finished' ? 'var(--gray-600)' : 'var(--info-color)',
+              borderRadius: '10px',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+            }}>
+            {status?.toUpperCase()}
+          </span>
+        );
+      },
     },
   ];
 
@@ -158,3 +165,4 @@ export default function AdminSeasons() {
     </div>
   );
 }
+

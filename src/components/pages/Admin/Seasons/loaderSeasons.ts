@@ -1,8 +1,8 @@
-import { HttpClient, adminConfigService } from '../../../../services';
+import { HttpClient, adminConfigService, type ISeason, type ILeague } from '../../../../services';
 
 export async function loaderSeasons() {
   const [resSeasons, resCatalogs] = await Promise.all([
-    HttpClient.get<any[]>('/api/v1/season'),
+    HttpClient.get<ISeason[]>('/api/v1/season'),
     adminConfigService.getCatalogs(),
   ]);
 
@@ -11,3 +11,4 @@ export async function loaderSeasons() {
     leagues: resCatalogs.success ? resCatalogs.data.leagues : [],
   };
 }
+
