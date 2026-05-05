@@ -22,13 +22,13 @@ export async function actionLeagues({ request }: { request: Request }) {
   let response;
   switch (data.actionType) {
     case 'save': {
-      response = await HttpClient.post('/api/v1/league', { ...data, logo: '⚽' });
+      response = await HttpClient.post('/api/v1/league', { body: { ...data, logo: '⚽' } });
       break;
     }
 
     case 'update': {
       const league: AdminLeaguesState['league'] = JSON.parse(data.data) as Partial<ILeague.League>;
-      response = await HttpClient.put(`/api/v1/league/${league?.id}`, data);
+      response = await HttpClient.put(`/api/v1/league/${league?.id}`, { body: data });
       break;
     }
 

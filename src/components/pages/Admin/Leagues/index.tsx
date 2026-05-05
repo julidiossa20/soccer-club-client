@@ -1,5 +1,5 @@
 import { Edit, Globe, ShieldAlert, Trash } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useActionData, useLoaderData } from 'react-router-dom';
 import DataGrid, { type Action as DataGridAction } from '../../../core/DataGrid';
 import { Form, type SchemaField } from '../../../core/Form';
@@ -48,24 +48,7 @@ export interface AdminLeaguesState {
 export default function AdminLeagues() {
   const leagues = useLoaderData<ILeague.GetLeague['data']>();
   const actionData = useActionData<{ success: boolean; errors: Record<string, string | string[]> | undefined }>();
-
   const [state, setState] = useState<AdminLeaguesState>({ isModalOpen: false, action: 'idle', league: null });
-
-  // const paginatedData = useMemo(() => {
-  //   const start = (displayPage - 1) * pageSize;
-  //   return data.slice(start, start + pageSize);
-  // }, [data, displayPage, pageSize]);
-
-  useEffect(() => {
-    if (actionData?.success) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setState({ action: 'idle', isModalOpen: false, league: null });
-    }
-  }, [actionData]);
-
-  const handleClick = ({ action, isModalOpen, league }: AdminLeaguesState) => {
-    setState({ action, isModalOpen, league });
-  };
 
   const columns = [
     { key: 'name', label: 'Nombre' },
@@ -94,14 +77,14 @@ export default function AdminLeagues() {
       name: 'edit',
       label: 'Editar',
       icon: <Edit size={16} />,
-      onClick: (league) => handleClick({ action: 'update', isModalOpen: true, league }),
+      onClick: (league) => setState({ action: 'update', isModalOpen: true, league }),
     },
     {
       name: 'delete',
       label: 'Borrar',
       icon: <Trash size={16} />,
       variant: 'danger' as const,
-      onClick: (league) => handleClick({ action: 'delete', isModalOpen: true, league }),
+      onClick: (league) => setState({ action: 'delete', isModalOpen: true, league }),
     },
   ];
 
@@ -129,6 +112,7 @@ export default function AdminLeagues() {
           values={state.league ?? {}}
           actionType={state.action}
           data={state.league}
+          onActionSuccess={() => setState({ action: 'idle', isModalOpen: false, league: null })}
         />
       </Modal>
     </div>
