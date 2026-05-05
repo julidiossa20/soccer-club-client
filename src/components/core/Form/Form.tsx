@@ -1,5 +1,5 @@
 import { Form as RouterForm, useActionData, useSubmit } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '../Button/Button';
 import { FormField } from './FormField';
 import type { FormProps, SchemaField } from './types';
@@ -27,13 +27,14 @@ export const Form = <T extends SchemaField[], K extends object>({
 }: FormProps<T, K>) => {
   const submit = useSubmit();
   const actionData = useActionData<{ success?: boolean; errors?: Record<string, string | string[]> } | undefined>();
+  const initialActionData = useRef(actionData);
   const errors = propErrors ?? actionData?.errors ?? {};
 
   useEffect(() => {
-    if (actionData && onActionSuccess && onActionError) {
-      if (actionData.success) {
+    if (actionData && actionData !== initialActionData.current) {
+      if (actionData.success && onActionSuccess) {
         void onActionSuccess();
-      } else if (actionData.errors) {
+      } else if (actionData.errors && onActionError) {
         void onActionError();
       }
     }
