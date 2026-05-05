@@ -1,4 +1,5 @@
 import { Form as RouterForm, useActionData, useSubmit } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Button } from '../Button/Button';
 import { FormField } from './FormField';
 import type { FormProps, SchemaField } from './types';
@@ -10,7 +11,7 @@ export const Form = <T extends SchemaField[], K extends object>({
   values = {},
   errors: propErrors,
   onChange,
-  onSubmit,
+  // _onSubmit,
   method,
   action,
   columns = 1,
@@ -21,11 +22,22 @@ export const Form = <T extends SchemaField[], K extends object>({
   cancelLabel = 'Volver',
   className = '',
   data,
+  onActionSuccess,
+  onActionError,
 }: FormProps<T, K>) => {
   const submit = useSubmit();
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const actionData = (useActionData() as { errors?: Record<string, string | string[]> } | undefined) ?? {};
-  const errors = propErrors ?? actionData.errors ?? {};
+  const actionData = useActionData<{ success?: boolean; errors?: Record<string, string | string[]> } | undefined>();
+  const errors = propErrors ?? actionData?.errors ?? {};
+
+  useEffect(() => {
+    if (actionData && onActionSuccess && onActionError) {
+      if (actionData.success) {
+        void onActionSuccess();
+      } else if (actionData.errors) {
+        void onActionError();
+      }
+    }
+  }, [actionData, onActionError, onActionSuccess]);
 
   const fieldsClass = [styles.fields, columns === 2 && styles['cols-2']].filter(Boolean).join(' ');
 
@@ -43,23 +55,17 @@ export const Form = <T extends SchemaField[], K extends object>({
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Detenemos el envío automático
+    event.preventDefault();
 
-    // 1. Construimos el FormData del formulario
     const formData = new FormData(event.currentTarget);
 
-    // 2. ¡Aquí agregas lo que quieras!
     formData.append('actionType', actionType);
     formData.append('data', JSON.stringify(data));
 
-    // 3. Ejecutas el submit de React Router manualmente
     void submit(formData, {
       method: method || 'post',
       action: action,
     });
-
-    // Si tenías un onSubmit pasado por props, lo ejecutas aquí
-    // if (onSubmit) onSubmit(event);
   };
 
   return (

@@ -120,4 +120,7 @@ export interface FormProps<T extends SchemaField[], K extends object> {
   onCancel?: () => void;
   cancelLabel?: string;
   className?: string;
+  /** Callback llamado cuando la acción es exitosa */
+  onActionSuccess?: () => void;
+  onActionError?: () => void;
 }
