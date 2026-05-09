@@ -6,12 +6,8 @@ import type { SchemaField, FieldValue } from '../components/core/Form/types';
 type SchemaKeys<T extends SchemaField[]> = T[number]['key'];
 
 // Infiere el tipo de valor correcto por tipo de campo:
-// checkbox → boolean, number → number, resto → string
-type InferFieldValue<T extends SchemaField> = T extends { type: 'checkbox' }
-  ? boolean
-  : T extends { type: 'number' }
-    ? number
-    : string;
+// checkbox → boolean, resto → string
+type InferFieldValue<T extends SchemaField> = T extends { type: 'checkbox' } ? boolean : string;
 
 // Construye el objeto de valores tipado campo a campo
 type InferFormValues<T extends SchemaField[]> = {

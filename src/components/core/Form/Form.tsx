@@ -58,9 +58,11 @@ export const Form = <T extends SchemaField[], K extends object>({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData();
 
+    const formValues = Object.fromEntries(new FormData(event.currentTarget));
     formData.append('actionType', actionType);
+    formData.append('form', JSON.stringify(formValues));
     formData.append('data', JSON.stringify(data));
 
     void submit(formData, {

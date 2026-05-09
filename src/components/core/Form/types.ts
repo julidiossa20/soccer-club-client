@@ -100,7 +100,7 @@ export interface FormProps<T extends SchemaField[], K extends object> {
   schema: T;
   data: K | null;
   /** Valores actuales del formulario (opcional si es no controlado) */
-  values?: Record<string, FieldValue>;
+  values?: Record<string, unknown>;
   /** Errores por campo */
   errors?: Record<string, string | string[]>;
   /** Handler de cambio (opcional si es no controlado) */
