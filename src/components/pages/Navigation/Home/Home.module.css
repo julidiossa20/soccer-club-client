@@ -1,0 +1,277 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ─── Hero Section ──────────────────────────── */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80vh;
+  min-height: 37.5rem;
+  overflow: hidden;
+  color: var(--text-color-white);
+  background-color: var(--primary-color);
+}
+
+.hero__image-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(0deg, rgb(0 0 0 / 0.8) 0%, rgb(0 0 0 / 0.2) 100%);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 75rem;
+  padding: 0 var(--px20);
+  text-align: center;
+}
+
+.hero__badge {
+  display: inline-block;
+  padding: var(--px5) var(--px15);
+  margin-bottom: var(--px20);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-sm);
+}
+
+.hero__title {
+  margin-bottom: var(--px15);
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.hero__subtitle {
+  max-width: 43.75rem;
+  margin: 0 auto var(--px35);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--gray-300);
+}
+
+.hero__actions {
+  display: flex;
+  gap: var(--px15);
+  justify-content: center;
+}
+
+/* ─── Next Match Card ────────────────────────── */
+
+.nextMatch {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 62.5rem;
+  padding: var(--px40);
+  margin: -5rem auto var(--px80);
+  background: var(--bg-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.nextMatch__header {
+  margin-bottom: var(--px20);
+  text-align: center;
+}
+
+.nextMatch__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nextMatch__teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--px40);
+  align-items: center;
+}
+
+.nextMatch__team {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px15);
+  align-items: center;
+}
+
+.nextMatch__logo {
+  width: 6.25rem;
+  height: 6.25rem;
+  object-fit: contain;
+}
+
+.nextMatch__teamName {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.nextMatch__vs {
+  font-size: 2.5rem;
+  font-style: italic;
+  font-weight: 900;
+  color: var(--gray-200);
+}
+
+.nextMatch__info {
+  padding-top: var(--px20);
+  margin-top: var(--px35);
+  text-align: center;
+  border-top: 1px solid var(--gray-100);
+}
+
+.nextMatch__details {
+  display: flex;
+  gap: var(--px35);
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+
+.nextMatch__detail {
+  display: flex;
+  gap: var(--px8);
+  align-items: center;
+}
+
+/* ─── News Section ──────────────────────────── */
+
+.section {
+  width: 100%;
+  max-width: 75rem;
+  padding: 0 var(--px20);
+  margin: 0 auto var(--px80);
+}
+
+.section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--px40);
+}
+
+.section__title {
+  position: relative;
+  padding-left: var(--px15);
+  font-size: 2rem;
+}
+
+.section__title::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  content: '';
+  background: var(--secondary-color);
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18.75rem, 1fr));
+  gap: var(--px35);
+}
+
+.newsCard {
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.newsCard:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-8px);
+}
+
+.newsCard__image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.newsCard__content {
+  padding: var(--px24);
+}
+
+.newsCard__date {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+}
+
+.newsCard__title {
+  margin: var(--px10) 0 var(--px15);
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.newsCard__excerpt {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--gray-600);
+}
+
+@media (width <= 768px) {
+  .nextMatch {
+    padding: var(--px20);
+    margin-top: -3rem;
+  }
+
+  .nextMatch__teams {
+    gap: var(--px20);
+  }
+
+  .nextMatch__logo {
+    width: 4.375rem;
+    height: 4.375rem;
+  }
+
+  .nextMatch__teamName {
+    font-size: 1rem;
+  }
+
+  .nextMatch__vs {
+    font-size: 1.5rem;
+  }
+
+  .nextMatch__details {
+    flex-direction: column;
+    gap: var(--px10);
+    align-items: center;
+  }
+}

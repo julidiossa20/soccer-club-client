@@ -1,0 +1,30 @@
+.profile {
+  max-width: 56.25rem;
+  padding: 3.75rem 1.25rem;
+  margin: 0 auto;
+}
+
+.profile.mobile {
+  padding: 1.25rem;
+}
+
+.profile__card {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: 4.5rem;
+  padding: 2.5rem;
+}
+
+.profile__card.mobile {
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.profile__card-statistics {
+  text-align: center;
+}
+
+.profile__card-information {
+  display: block;
+}

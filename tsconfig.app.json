@@ -22,7 +22,21 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* CSS cmodule*/
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "classnameTransform": "asIs",
+          "goToDefinition": true,
+          "allowUnknownClassnames": false,
+          "namedExports": true
+        }
+      }
+    ],
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"]
 }

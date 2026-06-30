@@ -1,0 +1,27 @@
+.change {
+  /* pendiente */
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px4);
+  margin-top: var(--px16);
+}
+
+.divider {
+  display: flex;
+  gap: var(--px12);
+  align-items: center;
+  margin: var(--px20) 0 var(--px4);
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+
+.divider::before,
+.divider::after {
+  flex: 1;
+  height: var(--px1);
+  content: '';
+  background-color: var(--gray-200);
+}

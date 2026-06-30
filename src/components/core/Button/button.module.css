@@ -1,0 +1,110 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--px05);
+  cursor: pointer;
+  border: none;
+  border-radius: var(--border-radius-md);
+  transition: all 0.2s ease-in-out;
+}
+
+.button:disabled,
+.button.is-loading {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Sizes */
+.button.size-sm {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+}
+
+.button.size-md {
+  padding: 0.625rem 1.25rem;
+  font-size: 1rem;
+}
+
+.button.size-lg {
+  padding: 0.875rem 1.75rem;
+  font-size: 1.125rem;
+}
+
+/* Variants */
+.button.variant-primary {
+  color: var(--text-color-white);
+  background-color: var(--secondary-color);
+  box-shadow: var(--shadown-red);
+}
+
+.button.variant-primary:hover {
+  background-color: var(--secondary-hover);
+  box-shadow: var(--shadown-red-hover);
+  transform: translateY(var(--px2));
+}
+
+.button.variant-secondary {
+  color: var(--bg-color);
+  background-color: var(--primary-color);
+}
+
+.button.variant-secondary:hover {
+  background-color: var(--gray-800);
+}
+
+.button.variant-outline {
+  color: var(--text-color-black);
+  background-color: transparent;
+  border: var(--px2) solid var(--primary-color);
+}
+
+.button.variant-outline:hover {
+  color: var(--text-color-white);
+  background-color: var(--primary-color);
+}
+
+.button.variant-ghost {
+  color: var(--text-color-black);
+  background-color: transparent;
+}
+
+.button.variant-ghost:hover {
+  background-color: var(--glass-bg-old);
+}
+
+.button.variant-danger {
+  color: var(--bg-color);
+  background-color: var(--error-color);
+}
+
+.button.variant-danger:hover {
+  background-color: var(--secondary-color);
+}
+
+/* Spinner for loading state */
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.5rem;
+  border: var(--px2) solid currentcolor;
+  border-right-color: transparent;
+  border-radius: var(--border-radius-50);
+  animation: spinner-spin 0.8s linear infinite;
+}
+
+@keyframes spinner-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

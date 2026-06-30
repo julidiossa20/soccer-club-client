@@ -1,0 +1,98 @@
+.container {
+  max-width: 1200px;
+  padding: var(--px80) var(--px20);
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: var(--px60);
+  text-align: center;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 950;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+}
+
+.highlight {
+  color: var(--secondary-color);
+}
+
+.subtitle {
+  margin-top: var(--px10);
+  color: var(--gray-600);
+  font-size: 1.2rem;
+}
+
+.matchInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px40);
+  align-items: center;
+  margin-bottom: var(--px80);
+}
+
+.matchCard {
+  display: flex;
+  gap: var(--px40);
+  align-items: center;
+  padding: var(--px30) var(--px50);
+  background-color: var(--white);
+  border-radius: var(--px15);
+  box-shadow: var(--shadow-xl);
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px10);
+  align-items: center;
+  width: 150px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.vs {
+  color: var(--gray-300);
+  font-size: 2.5rem;
+  font-weight: 900;
+}
+
+.opponentLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  color: var(--gray-400);
+  font-size: 1.5rem;
+  font-weight: 900;
+  background-color: var(--gray-100);
+  border-radius: 50%;
+}
+
+.details {
+  display: flex;
+  gap: var(--px30);
+  color: var(--gray-700);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.stadiumWrapper {
+  margin-top: var(--px40);
+}
+
+@media (width <= 768px) {
+  .details {
+    flex-direction: column;
+    gap: var(--px10);
+    text-align: center;
+  }
+}

@@ -1,0 +1,44 @@
+{
+  // ─── Formateo ──────────────────────────────────────────────────────────────
+  // "editor.formatOnSave": true,
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.eslint": "explicit",
+  //   "source.fixAll.stylelint": "explicit"
+  // },
+
+  // ─── ESLint ────────────────────────────────────────────────────────────────
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  // ─── Stylelint ─────────────────────────────────────────────────────────────
+  // Activa Stylelint en VS Code y desactiva la validación CSS nativa de VS Code
+  // (evita conflictos entre ambas — Stylelint es más estricto y usamos él)
+  "stylelint.enable": true,
+  "stylelint.validate": ["css"],
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+
+  // ─── CSS Var Complete (phoenisx.cssvar) ────────────────────────────────────
+  // Esta extensión escanea los archivos indicados y provee autocomplete
+  // de variables CSS cuando escribes var( en cualquier archivo CSS del proyecto
+  "cssvar.files": [
+    // Archivo principal de tokens/variables globales del proyecto
+    "src/index.css"
+  ],
+  // También busca variables en estos patrones de archivo adicionales
+  "cssvar.ignore": ["**/node_modules/**", "**/dist/**", "**/coverage/**"],
+  // Muestra el valor real de la variable en el tooltip del autocomplete
+  // Ejemplo: --primary-color → #1a1a1a (con preview de color)
+  "cssvar.enableColors": true,
+  // Activa el autocomplete también dentro de archivos TSX (css-in-js style props)
+  "cssvar.extensions": ["css", "scss", "sass"],
+  // Muestra el archivo de origen de la variable en el autocomplete
+  "cssvar.postfix": " (index.css)",
+
+  // ─── Editor ────────────────────────────────────────────────────────────────
+  "editor.tabSize": 2,
+  "editor.rulers": [120]
+  // "editor.wordWrap": "off",
+  // "files.eol": "\r\n"
+}

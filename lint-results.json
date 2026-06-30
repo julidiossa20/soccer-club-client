@@ -1,0 +1,82 @@
+[
+  {
+    "filePath": "D:\\soccer-club\\soccer-club-client\\src\\components\\core\\Form\\Form.tsx",
+    "messages": [
+      {
+        "ruleId": "css-modules/no-unused-class",
+        "severity": 2,
+        "message": "Unused classes found in form.module.css: col-span-2",
+        "line": 4,
+        "column": 8,
+        "nodeType": "ImportDefaultSpecifier",
+        "endLine": 4,
+        "endColumn": 14
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-type-assertion",
+        "severity": 2,
+        "message": "This assertion is unnecessary since it does not change the type of the expression.",
+        "line": 28,
+        "column": 20,
+        "nodeType": "TSAsExpression",
+        "messageId": "unnecessaryAssertion",
+        "endLine": 28,
+        "endColumn": 51,
+        "fix": { "range": [845, 859], "text": "" }
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 2,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 1,
+    "fixableWarningCount": 0,
+    "source": "import { Button } from '../Button/Button';\r\nimport { FormField } from './FormField';\r\nimport type { FormProps, SchemaField, FieldValue } from './types';\r\nimport styles from './form.module.css';\r\n\r\nexport const Form = <T extends SchemaField[]>({\r\n  schema,\r\n  values,\r\n  errors = {},\r\n  onChange,\r\n  onSubmit,\r\n  columns = 1,\r\n  isLoading = false,\r\n  submitLabel = 'Guardar',\r\n  onCancel,\r\n  cancelLabel = 'Cancelar',\r\n  className = '',\r\n}: FormProps<T>) => {\r\n  const fieldsClass = [styles.fields, columns === 2 && styles['cols-2']].filter(Boolean).join(' ');\r\n\r\n  return (\r\n    <form className={`${styles.form} ${className}`} onSubmit={onSubmit} noValidate>\r\n      <div className={fieldsClass}>\r\n        {schema.map((field) => (\r\n          <FormField\r\n            key={field.key}\r\n            field={field}\r\n            value={values[field.key] as FieldValue}\r\n            error={errors[field.key]}\r\n            onChange={onChange}\r\n          />\r\n        ))}\r\n      </div>\r\n\r\n      <div className={styles.actions}>\r\n        {onCancel && (\r\n          <Button type='button' variant='outline' size='md' onClick={onCancel} disabled={isLoading}>\r\n            {cancelLabel}\r\n          </Button>\r\n        )}\r\n        <Button type='submit' variant='primary' size='md' isLoading={isLoading}>\r\n          {submitLabel}\r\n        </Button>\r\n      </div>\r\n    </form>\r\n  );\r\n};\r\n\r\nForm.displayName = 'Form';\r\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\soccer-club\\soccer-club-client\\src\\components\\core\\Form\\FormField.tsx",
+    "messages": [
+      {
+        "ruleId": "css-modules/no-unused-class",
+        "severity": 2,
+        "message": "Unused classes found in form.module.css: form, fields, cols-2, actions",
+        "line": 6,
+        "column": 8,
+        "nodeType": "ImportDefaultSpecifier",
+        "endLine": 6,
+        "endColumn": 14
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { Input } from '../Input/Input';\r\nimport { Textarea } from '../Textarea/Textarea';\r\nimport { Checkbox } from '../Checkbox/Checkbox';\r\nimport { Select } from '../Select/Select';\r\nimport type { SchemaField, FieldValue } from './types';\r\nimport styles from './form.module.css';\r\n\r\ninterface FormFieldProps {\r\n  field: SchemaField;\r\n  value: FieldValue;\r\n  error?: string | string[];\r\n  onChange: (key: string, value: FieldValue) => void;\r\n}\r\n\r\nexport const FormField = ({ field, value, error, onChange }: FormFieldProps) => {\r\n  const colSpanClass = field.colSpan === 2 ? styles['col-span-2'] : undefined;\r\n\r\n  if (field.type === 'checkbox') {\r\n    return (\r\n      <div className={colSpanClass}>\r\n        <Checkbox\r\n          label={field.label}\r\n          checked={Boolean(value)}\r\n          disabled={field.disabled}\r\n          error={typeof error === 'string' ? error : error?.[0]}\r\n          onChange={(e) => onChange(field.key, e.target.checked)}\r\n        />\r\n      </div>\r\n    );\r\n  }\r\n\r\n  if (field.type === 'select') {\r\n    return (\r\n      <div className={colSpanClass}>\r\n        <Select\r\n          label={field.label}\r\n          options={field.options}\r\n          value={String(value ?? '')}\r\n          required={field.required}\r\n          disabled={field.disabled}\r\n          helperText={field.helperText}\r\n          error={typeof error === 'string' ? error : error?.[0]}\r\n          onChange={(e) => onChange(field.key, e.target.value)}\r\n        />\r\n      </div>\r\n    );\r\n  }\r\n\r\n  if (field.type === 'textarea') {\r\n    return (\r\n      <div className={colSpanClass}>\r\n        <Textarea\r\n          label={field.label}\r\n          value={String(value ?? '')}\r\n          required={field.required}\r\n          disabled={field.disabled}\r\n          placeholder={field.placeholder}\r\n          helperText={field.helperText}\r\n          rows={field.rows}\r\n          error={typeof error === 'string' ? error : error?.[0]}\r\n          onChange={(e) => onChange(field.key, e.target.value)}\r\n        />\r\n      </div>\r\n    );\r\n  }\r\n\r\n  // text | email | password | number | date\r\n  return (\r\n    <div className={colSpanClass}>\r\n      <Input\r\n        label={field.label}\r\n        type={field.type}\r\n        value={String(value ?? '')}\r\n        required={field.required}\r\n        disabled={field.disabled}\r\n        placeholder={field.placeholder}\r\n        helperText={field.helperText}\r\n        error={Array.isArray(error) ? error : error ? [error] : undefined}\r\n        onChange={(e) => onChange(field.key, e.target.value)}\r\n      />\r\n    </div>\r\n  );\r\n};\r\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\soccer-club\\soccer-club-client\\src\\components\\core\\Form\\index.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\soccer-club\\soccer-club-client\\src\\components\\core\\Form\\types.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]
